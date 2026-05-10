@@ -26,6 +26,7 @@ export function LoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || "Login failed");
       login(data.access_token, data.user);
+      // Returning users go to their dashboard to see history & spending
       navigate("/dashboard");
     } catch (err: any) {
       setError(err.message);
@@ -45,12 +46,14 @@ export function LoginPage() {
               <MapPin size={24} color="white" />
             </div>
             <div className="text-left">
-              <h1 className="text-xl font-bold gradient-text">SmartEarn Living</h1>
+              <h1 className="text-xl font-bold gradient-text">SmartLiving</h1>
               <p className="text-xs" style={{ color: "var(--text-muted)" }}>Urban Relocation Platform</p>
             </div>
           </div>
           <h2 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>Welcome back</h2>
-          <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>Sign in to your account</p>
+          <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
+            Sign in to see your recommendations & spending tracker
+          </p>
         </div>
 
         {/* Card */}
@@ -129,7 +132,7 @@ export function LoginPage() {
             <p className="text-sm" style={{ color: "var(--text-muted)" }}>
               Don't have an account?{" "}
               <Link to="/register" className="font-semibold" style={{ color: "var(--accent-indigo)" }}>
-                Create one
+                Create one free
               </Link>
             </p>
           </div>

@@ -8,8 +8,8 @@ import { LandingPage }  from "./pages/LandingPage";
 import { InputForm, type RecommendPayload } from "./components/InputForm";
 import { ResultsDashboard, type RecommendResponse } from "./components/ResultsDashboard";
 import { ErrorDisplay } from "./components/ErrorDisplay";
-import { Sparkles, MapPin, LogOut, LayoutDashboard } from "lucide-react";
-import { BookingsProvider } from "./context/BookingsContext";
+import { Sparkles, MapPin, LogOut, LayoutDashboard, Wallet } from "lucide-react";
+import { BookingsProvider, useBookings } from "./context/BookingsContext";
 
 // ─── Protected Route Wrapper ───────────────────────────────────────────
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -24,12 +24,35 @@ type ViewState =
   | { kind: "results"; data: RecommendResponse; payload: RecommendPayload }
   | { kind: "error"; error: any };
 
+// ─── Spending Badge (mini widget in navbar) ───────────────────────────
+function SpendingBadge() {
+  const { bookings, totalMonthlySpend } = useBookings();
+  const navigate = useNavigate();
+
+  if (bookings.length === 0) return null;
+
+  return (
+    <button
+      onClick={() => navigate("/dashboard")}
+      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
+      title="View my spending tracker"
+      style={{
+        background: "rgba(52,211,153,0.1)",
+        border: "1px solid rgba(52,211,153,0.25)",
+        color: "var(--accent-emerald)",
+      }}
+    >
+      <Wallet size={13} />
+      ₹{totalMonthlySpend.toLocaleString("en-IN")}/mo
+    </button>
+  );
+}
+
 // ─── Main Planner App ─────────────────────────────────────────────────
 function PlannerApp() {
   const { user, logout, token } = useAuth();
   const navigate = useNavigate();
   const [view, setView] = useState<ViewState>({ kind: "form" });
-
 
   const handleSubmit = async (payload: RecommendPayload) => {
     setView({ kind: "loading" });
@@ -57,7 +80,7 @@ function PlannerApp() {
         error: {
           error_code: "NETWORK_ERROR",
           message: "Could not connect to the server. Please ensure the backend is running.",
-          resolution_hint: "Start the backend with: python3 -m uvicorn main:app --reload --port 8000",
+          resolution_hint: "Start the backend with: cd backend && uvicorn main:app --reload --port 8000",
         },
       });
     }
@@ -76,8 +99,8 @@ function PlannerApp() {
       {/* ── Navbar ── */}
       <nav
         style={{
-          position: "sticky", top: 0, zIndex: 50, padding: "16px 24px",
-          background: "rgba(10, 10, 15, 0.85)",
+          position: "sticky", top: 0, zIndex: 50, padding: "14px 24px",
+          background: "rgba(10, 10, 15, 0.9)",
           backdropFilter: "blur(16px)",
           borderBottom: "1px solid rgba(255,255,255,0.06)",
         }}
@@ -88,9 +111,9 @@ function PlannerApp() {
               <MapPin size={18} color="white" />
             </div>
             <div>
-              <h1 className="text-base font-bold gradient-text leading-tight">SmartEarn Living</h1>
+              <h1 className="text-base font-bold gradient-text leading-tight">SmartLiving</h1>
               <p className="text-[10px] font-medium tracking-wider uppercase" style={{ color: "var(--text-muted)" }}>
-                Ecosystem Platform
+                Relocation Planner
               </p>
             </div>
           </div>
@@ -102,6 +125,10 @@ function PlannerApp() {
                 AI Analysis
               </span>
             </div>
+
+            {/* Spending tracker badge */}
+            <SpendingBadge />
+
             {user && (
               <div className="flex items-center gap-3 ml-2 pl-3" style={{ borderLeft: "1px solid var(--border-default)" }}>
                 <button
@@ -113,7 +140,7 @@ function PlannerApp() {
                   <LayoutDashboard size={15} /> Dashboard
                 </button>
                 <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
-                  Hi, {user.name.split(" ")[0]} 👋
+                  {user.name.split(" ")[0]} 👋
                 </span>
                 <button
                   onClick={logout}
@@ -132,13 +159,17 @@ function PlannerApp() {
       <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
         {view.kind === "form" && (
           <div className="fade-in-up">
-            <div className="text-center mb-8">
+            <div className="text-center mb-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4 text-xs font-semibold"
+                style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)", color: "var(--accent-indigo)" }}>
+                <Sparkles size={12} /> AI-Powered Neighborhood Matching
+              </div>
               <h2 className="text-3xl md:text-4xl font-extrabold mb-3" style={{ color: "var(--text-primary)" }}>
                 Where should you <span className="gradient-text">live & thrive</span>?
               </h2>
               <p className="text-base max-w-xl mx-auto" style={{ color: "var(--text-secondary)" }}>
-                Tell us about your work, finances, and lifestyle — we'll find the perfect
-                neighborhood with a full financial breakdown and daily routine projection.
+                Answer 3 quick questions about your work, finances, and lifestyle.
+                We'll find your perfect neighborhood with a full financial breakdown and daily routine simulation.
               </p>
             </div>
             <InputForm onSubmit={handleSubmit} loading={false} />
@@ -147,13 +178,26 @@ function PlannerApp() {
 
         {view.kind === "loading" && (
           <div className="flex flex-col items-center justify-center py-24 fade-in-up">
-            <div className="relative">
-              <div className="w-20 h-20 rounded-full animate-spin-slow" style={{ border: "3px solid var(--border-default)", borderTopColor: "var(--accent-indigo)" }} />
+            <div className="relative mb-6">
+              <div className="w-24 h-24 rounded-full animate-spin-slow"
+                style={{ border: "3px solid var(--border-default)", borderTopColor: "var(--accent-indigo)" }} />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <MapPin size={28} style={{ color: "var(--accent-indigo)" }} />
+              </div>
             </div>
-            <p className="mt-6 text-lg font-semibold gradient-text">AI is computing your plan…</p>
-            <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
-               Fetching places · Estimating savings · Scoring neighborhoods · Generating insights
-            </p>
+            <p className="text-xl font-bold gradient-text mb-2">AI is building your plan…</p>
+            <div className="space-y-1 text-center">
+              {[
+                "Analyzing neighborhoods near your office",
+                "Calculating rent vs savings potential",
+                "Simulating your daily routine",
+                "Generating AI insights & tradeoffs",
+              ].map((step, i) => (
+                <p key={i} className="text-sm" style={{ color: "var(--text-muted)", animationDelay: `${i * 0.3}s` }}>
+                  ✦ {step}
+                </p>
+              ))}
+            </div>
           </div>
         )}
 
@@ -174,7 +218,7 @@ function PlannerApp() {
       {/* ── Footer ── */}
       <footer className="py-6 text-center" style={{ borderTop: "1px solid var(--border-default)" }}>
         <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-          SmartEarn Living Ecosystem · Multi-City Intelligence · {new Date().getFullYear()}
+          SmartLiving Ecosystem · Multi-City Intelligence · {new Date().getFullYear()}
         </p>
       </footer>
     </div>
@@ -186,35 +230,34 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-      <BookingsProvider>
-        <Routes>
-          {/* Public routes */}
-          <Route path="/"         element={<LandingPage />} />
-          <Route path="/login"    element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          {/* Protected routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/plan"
-            element={
-              <ProtectedRoute>
-                <PlannerApp />
-              </ProtectedRoute>
-            }
-          />
-          {/* Fallback */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BookingsProvider>
+        <BookingsProvider>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/"         element={<LandingPage />} />
+            <Route path="/login"    element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            {/* Protected routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/plan"
+              element={
+                <ProtectedRoute>
+                  <PlannerApp />
+                </ProtectedRoute>
+              }
+            />
+            {/* Fallback */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BookingsProvider>
       </AuthProvider>
     </BrowserRouter>
   );
 }
-

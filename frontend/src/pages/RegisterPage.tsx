@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { MapPin, Eye, EyeOff, Sparkles, UserPlus } from "lucide-react";
+import { MapPin, Eye, EyeOff, Sparkles, UserPlus, CheckCircle2 } from "lucide-react";
 
 export function RegisterPage() {
   const { login } = useAuth();
@@ -30,13 +30,25 @@ export function RegisterPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || "Registration failed");
       login(data.access_token, data.user);
-      navigate("/dashboard");
+      // New users go straight to planning — no history to show yet
+      navigate("/plan");
     } catch (err: any) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
+
+  const passwordStrength = () => {
+    const p = form.password;
+    if (!p) return null;
+    if (p.length < 6) return { label: "Too short", color: "var(--accent-rose)", width: "20%" };
+    if (p.length < 8) return { label: "Weak", color: "var(--accent-amber)", width: "45%" };
+    if (!/[A-Z]/.test(p) || !/[0-9]/.test(p)) return { label: "Fair", color: "var(--accent-sky)", width: "65%" };
+    return { label: "Strong", color: "var(--accent-emerald)", width: "100%" };
+  };
+
+  const strength = passwordStrength();
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8" style={{ background: "var(--bg-primary)" }}>
@@ -49,12 +61,26 @@ export function RegisterPage() {
               <MapPin size={24} color="white" />
             </div>
             <div className="text-left">
-              <h1 className="text-xl font-bold gradient-text">SmartEarn Living</h1>
+              <h1 className="text-xl font-bold gradient-text">SmartLiving</h1>
               <p className="text-xs" style={{ color: "var(--text-muted)" }}>Urban Relocation Platform</p>
             </div>
           </div>
           <h2 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>Create your account</h2>
-          <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>Start your smart relocation journey</p>
+          <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
+            Start your smart relocation journey — takes 2 minutes
+          </p>
+        </div>
+
+        {/* What happens after registration */}
+        <div className="glass-card p-4 mb-5 flex items-start gap-3"
+          style={{ background: "linear-gradient(135deg, rgba(52,211,153,0.06), rgba(99,102,241,0.06))", borderColor: "rgba(52,211,153,0.2)" }}>
+          <Sparkles size={18} className="mt-0.5 shrink-0" style={{ color: "var(--accent-emerald)" }} />
+          <div>
+            <p className="text-sm font-semibold" style={{ color: "var(--accent-emerald)" }}>What happens next?</p>
+            <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>
+              After registering, we'll walk you through a 3-step planning wizard to find your perfect neighborhood, calculate your savings, and simulate your daily routine.
+            </p>
+          </div>
         </div>
 
         {/* Card */}
@@ -91,7 +117,7 @@ export function RegisterPage() {
 
             {/* Password */}
             <div>
-              <label className="form-label">Password <span style={{ color: "var(--text-muted)" }}>(min 6 chars)</span></label>
+              <label className="form-label">Password</label>
               <div className="relative">
                 <input
                   id="register-password"
@@ -113,20 +139,36 @@ export function RegisterPage() {
                   {showPwd ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
+              {/* Password strength */}
+              {strength && (
+                <div className="mt-2">
+                  <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "var(--bg-input)" }}>
+                    <div className="h-full rounded-full transition-all duration-300"
+                      style={{ width: strength.width, background: strength.color }} />
+                  </div>
+                  <p className="text-xs mt-1" style={{ color: strength.color }}>{strength.label}</p>
+                </div>
+              )}
             </div>
 
             {/* Confirm Password */}
             <div>
               <label className="form-label">Confirm password</label>
-              <input
-                id="register-confirm"
-                type={showPwd ? "text" : "password"}
-                className="form-input"
-                placeholder="••••••••"
-                value={form.confirm}
-                onChange={e => setForm(f => ({ ...f, confirm: e.target.value }))}
-                required
-              />
+              <div className="relative">
+                <input
+                  id="register-confirm"
+                  type={showPwd ? "text" : "password"}
+                  className="form-input"
+                  placeholder="••••••••"
+                  value={form.confirm}
+                  onChange={e => setForm(f => ({ ...f, confirm: e.target.value }))}
+                  required
+                  style={{ paddingRight: "44px" }}
+                />
+                {form.confirm && form.password === form.confirm && (
+                  <CheckCircle2 size={18} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: "var(--accent-emerald)" }} />
+                )}
+              </div>
             </div>
 
             {/* Error */}
@@ -151,7 +193,7 @@ export function RegisterPage() {
                 </span>
               ) : (
                 <span className="flex items-center justify-center gap-2">
-                  <UserPlus size={17} /> Create Account
+                  <UserPlus size={17} /> Create Account & Start Planning
                 </span>
               )}
             </button>
