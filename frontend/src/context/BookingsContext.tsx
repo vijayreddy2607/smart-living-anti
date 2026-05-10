@@ -1,9 +1,11 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 /* ─── Types ──────────────────────────────────────────────────────── */
+export type BookingType = "accommodation" | "food" | "gym" | "travel" | "grocery" | "utilities" | "misc";
+
 export interface BookedItem {
   id: string;
-  type: "accommodation" | "food" | "gym";
+  type: BookingType;
   name: string;
   area: string;
   city: string;
@@ -28,7 +30,6 @@ const BookingsContext = createContext<BookingsContextType | null>(null);
 export function BookingsProvider({ children }: { children: ReactNode }) {
   const [bookings, setBookings] = useState<BookedItem[]>([]);
 
-  // Restore from localStorage
   useEffect(() => {
     const stored = localStorage.getItem("sl_bookings");
     if (stored) {
@@ -36,7 +37,6 @@ export function BookingsProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Persist to localStorage
   useEffect(() => {
     localStorage.setItem("sl_bookings", JSON.stringify(bookings));
   }, [bookings]);
@@ -50,21 +50,15 @@ export function BookingsProvider({ children }: { children: ReactNode }) {
     setBookings((prev) => [...prev, newItem]);
   };
 
-  const removeBooking = (id: string) => {
-    setBookings((prev) => prev.filter((b) => b.id !== id));
-  };
-
+  const removeBooking = (id: string) => setBookings((prev) => prev.filter((b) => b.id !== id));
   const clearBookings = () => setBookings([]);
 
   const totalMonthlySpend = bookings.reduce((sum, b) => sum + b.monthlyCost, 0);
 
-  const getSavings = (salary: number, emi: number) => {
-    return salary - emi - totalMonthlySpend;
-  };
+  const getSavings = (salary: number, emi: number) => salary - emi - totalMonthlySpend;
 
-  const isBooked = (name: string, type: string) => {
-    return bookings.some((b) => b.name === name && b.type === type);
-  };
+  const isBooked = (name: string, type: string) =>
+    bookings.some((b) => b.name === name && b.type === type);
 
   return (
     <BookingsContext.Provider value={{ bookings, addBooking, removeBooking, clearBookings, totalMonthlySpend, getSavings, isBooked }}>

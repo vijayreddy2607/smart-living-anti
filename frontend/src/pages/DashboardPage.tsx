@@ -6,9 +6,11 @@ import {
   Building2, ChevronRight, BarChart3, RefreshCw,
   IndianRupee, Star, LogOut, Zap, Home, Dumbbell,
   Utensils, Trash2, PiggyBank, Wallet, ArrowRight,
-  Shield, Plus, CheckCircle2, Briefcase
+  Shield, Plus, CheckCircle2, Briefcase, Bus, ShoppingCart,
+  Lightbulb, MoreHorizontal, X, ChevronDown, ChevronUp,
+  Coffee, Camera, Mountain, Music, Bike, Sunset, Trees, Waves
 } from "lucide-react";
-import { useBookings, type BookedItem } from "../context/BookingsContext";
+import { useBookings, type BookedItem, type BookingType } from "../context/BookingsContext";
 import { DiscoveryModal } from "../components/DiscoveryModal";
 
 interface HistoryEntry {
@@ -44,6 +46,342 @@ interface CityStats {
 
 const fmt = (n: number) => `₹${n.toLocaleString("en-IN")}`;
 
+/* ── Weekend tip data per city ──────────────────────────────────── */
+const WEEKEND_TIPS: Record<string, { emoji: string; title: string; desc: string; cost: string; icon: React.ReactNode }[]> = {
+  Pune: [
+    { emoji: "⛰️", title: "Trek to Sinhagad Fort", desc: "Early morning 2-hour trek with stunning valley views. Carry your own snacks.", cost: "Free", icon: <Mountain size={16} /> },
+    { emoji: "🌿", title: "Osho Meditation Garden", desc: "Serene evening walk in lush greenery near Koregaon Park. Great for unwinding.", cost: "₹200 entry", icon: <Trees size={16} /> },
+    { emoji: "☕", title: "Café Hopping in FC Road", desc: "Explore indie cafés along Fergusson College Road — breakfast for under ₹150.", cost: "₹100–200", icon: <Coffee size={16} /> },
+    { emoji: "🎶", title: "Pune Music Festival", desc: "Check local event listings — weekend concerts & open mics are free or cheap.", cost: "₹0–300", icon: <Music size={16} /> },
+  ],
+  Bengaluru: [
+    { emoji: "🚴", title: "Nandi Hills Bike Ride", desc: "70 km from the city — sunrise ride at 1478 m altitude. Start at 4 AM.", cost: "₹50 entry", icon: <Bike size={16} /> },
+    { emoji: "🌳", title: "Morning in Cubbon Park", desc: "Walk, jog or read under century-old trees in the heart of the city.", cost: "Free", icon: <Trees size={16} /> },
+    { emoji: "📸", title: "Heritage Walk — Pete Area", desc: "Old Bengaluru's colourful markets, temples & architecture guided walk.", cost: "₹0–300", icon: <Camera size={16} /> },
+    { emoji: "🌅", title: "Lalbagh Glass House", desc: "Beautiful botanical garden & glass house — ideal for a quiet evening.", cost: "₹25 entry", icon: <Sunset size={16} /> },
+  ],
+  Hyderabad: [
+    { emoji: "🚣", title: "Hussain Sagar Boat Ride", desc: "Boat ride to the Buddha statue island on the lake. Magical at dusk.", cost: "₹60–100", icon: <Waves size={16} /> },
+    { emoji: "🍖", title: "Old City Food Walk", desc: "Haleem, Irani chai & Osmania biscuits trail through Laad Bazaar.", cost: "₹200–400", icon: <Utensils size={16} /> },
+    { emoji: "⛰️", title: "Mrugavani National Park", desc: "Trekking & wildlife on the outskirts — perfect for a nature day off.", cost: "₹30 entry", icon: <Mountain size={16} /> },
+    { emoji: "🌅", title: "Golconda Fort Sunset", desc: "Explore the fort and stay for the Sound & Light show in the evenings.", cost: "₹30–130", icon: <Sunset size={16} /> },
+  ],
+  Chennai: [
+    { emoji: "🌅", title: "Marina Beach Sunrise Run", desc: "World's second-longest beach — a peaceful 5 AM run before the crowds arrive.", cost: "Free", icon: <Waves size={16} /> },
+    { emoji: "🛺", title: "Mylapore Temple Trail", desc: "Visit Kapaleeshwarar Temple, eat street dosai, explore old-town streets.", cost: "₹50–150", icon: <Camera size={16} /> },
+    { emoji: "🚗", title: "ECR Road Trip", desc: "Drive down East Coast Road to Mahabalipuram — beaches, temples, seafood.", cost: "₹300–500", icon: <Mountain size={16} /> },
+    { emoji: "☕", title: "Filter Coffee Tour", desc: "Hop between Murugan Idli Shop, Saravana Bhavan and Ratna Café on a lazy Sunday.", cost: "₹100–200", icon: <Coffee size={16} /> },
+  ],
+  Mumbai: [
+    { emoji: "🥾", title: "Sanjay Gandhi NP Trek", desc: "Kanheri Caves hike inside the city limits — cool and shaded forest walk.", cost: "₹50 entry", icon: <Mountain size={16} /> },
+    { emoji: "🌊", title: "Elephanta Caves Ferry", desc: "1-hour ferry from Gateway of India to rock-cut caves — UNESCO World Heritage Site.", cost: "₹200 round trip", icon: <Waves size={16} /> },
+    { emoji: "📸", title: "Bandra Bandstand Walk", desc: "Sea-facing promenade, street art & sea forts. Best at sunset with vada pav.", cost: "Free", icon: <Sunset size={16} /> },
+    { emoji: "🎨", title: "Dharavi Art Room", desc: "Free community art spaces and craft workshops every weekend morning.", cost: "Free", icon: <Camera size={16} /> },
+  ],
+};
+
+const DEFAULT_TIPS = [
+  { emoji: "🌿", title: "Explore Local Parks", desc: "Most Indian cities have beautiful green spaces that are free or nearly free.", cost: "Free", icon: <Trees size={16} /> },
+  { emoji: "☕", title: "Try a Local Café", desc: "Find a neighbourhood café and spend a slow morning reading or catching up.", cost: "₹100–200", icon: <Coffee size={16} /> },
+  { emoji: "📸", title: "Heritage Walk", desc: "Every city has a heritage area worth exploring — discover your new neighbourhood.", cost: "Free–₹200", icon: <Camera size={16} /> },
+];
+
+/* ─── Manual Expense Form ────────────────────────────────────────── */
+const MANUAL_CATEGORIES: { type: BookingType; label: string; icon: React.ReactNode; color: string; placeholder: string }[] = [
+  { type: "travel",    label: "Travel / Commute",  icon: <Bus size={15} />,          color: "var(--accent-sky)",     placeholder: "e.g. Metro pass, Ola/Uber, Petrol" },
+  { type: "grocery",  label: "Groceries",          icon: <ShoppingCart size={15} />, color: "var(--accent-amber)",   placeholder: "e.g. Big Bazaar, D-Mart weekly shop" },
+  { type: "utilities",label: "Utilities & Bills",  icon: <Lightbulb size={15} />,    color: "var(--accent-orange)",  placeholder: "e.g. Electricity, WiFi, Mobile recharge" },
+  { type: "misc",     label: "Other / Misc",       icon: <MoreHorizontal size={15} />, color: "var(--text-secondary)", placeholder: "e.g. Subscriptions, Personal care, etc." },
+];
+
+function AddExpenseInline({ onAdd, city, area }: { onAdd: (item: Omit<BookedItem, "id" | "bookedAt">) => void; city: string; area: string }) {
+  const [open, setOpen] = useState(false);
+  const [selectedType, setSelectedType] = useState<BookingType>("travel");
+  const [name, setName] = useState("");
+  const [amount, setAmount] = useState("");
+  const [error, setError] = useState("");
+
+  const cat = MANUAL_CATEGORIES.find(c => c.type === selectedType)!;
+
+  const handleAdd = () => {
+    if (!name.trim()) { setError("Please enter a name."); return; }
+    const val = Number(amount);
+    if (!val || val <= 0) { setError("Please enter a valid monthly amount."); return; }
+    onAdd({ type: selectedType, name: name.trim(), area: area || "—", city: city || "—", monthlyCost: val, details: cat.label });
+    setName(""); setAmount(""); setError(""); setOpen(false);
+  };
+
+  return (
+    <div className="mt-5">
+      {!open ? (
+        <button
+          onClick={() => setOpen(true)}
+          className="w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all"
+          style={{ background: "rgba(99,102,241,0.07)", border: "1.5px dashed rgba(99,102,241,0.3)", color: "var(--accent-indigo)" }}
+        >
+          <Plus size={16} /> Add Expense (travel, grocery, bills, misc…)
+        </button>
+      ) : (
+        <div className="p-5 rounded-2xl" style={{ background: "var(--bg-input)", border: "1px solid rgba(99,102,241,0.2)" }}>
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>Add Monthly Expense</span>
+            <button onClick={() => { setOpen(false); setError(""); }} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}>
+              <X size={16} />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            {MANUAL_CATEGORIES.map(c => (
+              <button key={c.type} onClick={() => setSelectedType(c.type)}
+                className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all text-left"
+                style={{
+                  background: selectedType === c.type ? `${c.color}18` : "var(--bg-elevated)",
+                  border: `1.5px solid ${selectedType === c.type ? c.color : "var(--border-default)"}`,
+                  color: selectedType === c.type ? c.color : "var(--text-muted)",
+                }}>
+                <span style={{ color: c.color }}>{c.icon}</span> {c.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="space-y-3">
+            <div>
+              <label className="text-xs font-medium mb-1.5 block" style={{ color: "var(--text-muted)" }}>Expense name</label>
+              <input
+                value={name}
+                onChange={e => setName(e.target.value)}
+                placeholder={cat.placeholder}
+                className="w-full px-3 py-2.5 rounded-xl text-sm"
+                style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-default)", color: "var(--text-primary)", outline: "none" }}
+                onKeyDown={e => e.key === "Enter" && handleAdd()}
+              />
+            </div>
+            <div>
+              <label className="text-xs font-medium mb-1.5 block" style={{ color: "var(--text-muted)" }}>Monthly amount (₹)</label>
+              <input
+                type="number"
+                value={amount}
+                onChange={e => setAmount(e.target.value)}
+                placeholder="e.g. 2500"
+                min={1}
+                className="w-full px-3 py-2.5 rounded-xl text-sm"
+                style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-default)", color: "var(--text-primary)", outline: "none" }}
+                onKeyDown={e => e.key === "Enter" && handleAdd()}
+              />
+            </div>
+          </div>
+
+          {error && <p className="text-xs mt-2" style={{ color: "var(--accent-rose)" }}>{error}</p>}
+
+          <div className="flex gap-2 mt-4">
+            <button onClick={handleAdd} className="btn-primary flex-1 justify-center" style={{ padding: "10px" }}>
+              <Plus size={14} /> Add to Tracker
+            </button>
+            <button onClick={() => { setOpen(false); setError(""); }}
+              className="px-4 py-2.5 rounded-xl text-sm font-medium"
+              style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-default)", color: "var(--text-muted)", cursor: "pointer" }}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ─── Weekend Tips Panel ─────────────────────────────────────────── */
+function WeekendTipsPanel({ city }: { city: string }) {
+  const tips = WEEKEND_TIPS[city] || DEFAULT_TIPS;
+  return (
+    <div className="fade-in-up glass-card overflow-hidden" style={{ borderColor: "rgba(251,191,36,0.2)" }}>
+      <div className="p-5 pb-4" style={{ borderBottom: "1px solid var(--border-default)" }}>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+            style={{ background: "linear-gradient(135deg, rgba(251,191,36,0.2), rgba(251,146,60,0.15))", border: "1px solid rgba(251,191,36,0.25)" }}>
+            <Sunset size={18} style={{ color: "var(--accent-amber)" }} />
+          </div>
+          <div>
+            <h3 className="text-base font-bold" style={{ color: "var(--text-primary)" }}>
+              Weekend Picks 🎉
+            </h3>
+            <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+              {city ? `Budget-friendly things to do in ${city} this weekend` : "Fun things to do near you"}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-3">
+        {tips.map((tip, i) => (
+          <div key={i} className="p-4 rounded-2xl flex items-start gap-3 group transition-all"
+            style={{ background: "var(--bg-input)", border: "1px solid var(--border-default)" }}
+            onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(251,191,36,0.3)")}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border-default)")}
+          >
+            <div className="text-2xl mt-0.5 flex-shrink-0">{tip.emoji}</div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <h4 className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>{tip.title}</h4>
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full flex-shrink-0"
+                  style={{ background: "rgba(52,211,153,0.12)", color: "var(--accent-emerald)" }}>
+                  {tip.cost}
+                </span>
+              </div>
+              <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>{tip.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="px-5 pb-5">
+        <div className="p-3 rounded-xl flex items-center gap-3"
+          style={{ background: "rgba(251,191,36,0.05)", border: "1px solid rgba(251,191,36,0.12)" }}>
+          <PiggyBank size={15} style={{ color: "var(--accent-amber)", flexShrink: 0 }} />
+          <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+            <strong style={{ color: "var(--accent-amber)" }}>Weekend budget tip:</strong> Cap weekend spending at{" "}
+            <strong>₹500–1,000</strong> — that's just ₹2,000–4,000/month and leaves your savings intact.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Smart Money Tips Panel ─────────────────────────────────────── */
+function MoneyTipsPanel({ salary, spend, bookings }: {
+  salary: number;
+  spend: number;
+  bookings: BookedItem[];
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const savingsRate = salary > 0 ? Math.round(((salary - spend) / salary) * 100) : 0;
+
+  const foodSpend    = bookings.filter(b => b.type === "food").reduce((s, b) => s + b.monthlyCost, 0);
+  const gymSpend     = bookings.filter(b => b.type === "gym").reduce((s, b) => s + b.monthlyCost, 0);
+  const travelSpend  = bookings.filter(b => b.type === "travel").reduce((s, b) => s + b.monthlyCost, 0);
+  const rentSpend    = bookings.filter(b => b.type === "accommodation").reduce((s, b) => s + b.monthlyCost, 0);
+
+  const tips: { icon: React.ReactNode; color: string; tip: string; saving: string }[] = [];
+
+  if (savingsRate < 20 && salary > 0) {
+    tips.push({
+      icon: <Target size={15} />, color: "var(--accent-indigo)",
+      tip: `You're saving ${savingsRate}% of income. The 20% rule means saving ${fmt(Math.round(salary * 0.2))}/month. Try reducing one category by 10% to get there.`,
+      saving: `+${fmt(Math.round(salary * 0.2 - (salary - spend)))} to reach goal`,
+    });
+  }
+
+  if (foodSpend > salary * 0.15) {
+    tips.push({
+      icon: <Utensils size={15} />, color: "var(--accent-rose)",
+      tip: `Your food spending (${fmt(foodSpend)}/mo) is above 15% of salary. Cooking at home 3 days a week can cut this by ₹1,500–3,000 a month.`,
+      saving: "Save ₹1,500–3,000/mo",
+    });
+  }
+
+  if (gymSpend > 2500) {
+    tips.push({
+      icon: <Dumbbell size={15} />, color: "var(--accent-emerald)",
+      tip: `Your gym costs ${fmt(gymSpend)}/mo. Look for flat-level gyms or society gyms (₹500–800/mo) — or try free parks & YouTube workouts.`,
+      saving: `Save up to ${fmt(gymSpend - 700)}/mo`,
+    });
+  }
+
+  if (travelSpend > salary * 0.12) {
+    tips.push({
+      icon: <Bus size={15} />, color: "var(--accent-sky)",
+      tip: `Travel costs ${fmt(travelSpend)}/mo. Consider a monthly metro/bus pass, or carpooling with colleagues — can cut costs by 30–50%.`,
+      saving: "Save 30–50% on commute",
+    });
+  }
+
+  if (rentSpend > salary * 0.35) {
+    tips.push({
+      icon: <Home size={15} />, color: "var(--accent-violet)",
+      tip: `Your rent (${fmt(rentSpend)}/mo) is above 35% of income. Sharing a flat with one roommate could halve this cost and free up significant savings.`,
+      saving: `Save ${fmt(Math.round(rentSpend * 0.35))}/mo`,
+    });
+  }
+
+  if (tips.length === 0) {
+    tips.push(
+      {
+        icon: <CheckCircle2 size={15} />, color: "var(--accent-emerald)",
+        tip: "Great job! Your spending looks well-balanced. Keep stacking savings and consider putting the surplus into a recurring deposit or mutual fund SIP.",
+        saving: "On track 🎯",
+      },
+      {
+        icon: <PiggyBank size={15} />, color: "var(--accent-amber)",
+        tip: "Emergency fund tip: Aim to save 3–6 months of expenses as a liquid safety net before committing to long-term investments.",
+        saving: "Financial security",
+      }
+    );
+  }
+
+  const visibleTips = expanded ? tips : tips.slice(0, 3);
+
+  return (
+    <div className="fade-in-up glass-card overflow-hidden" style={{ borderColor: "rgba(99,102,241,0.2)" }}>
+      <div className="p-5 pb-4" style={{ borderBottom: "1px solid var(--border-default)" }}>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+            style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.15), rgba(167,139,250,0.1))", border: "1px solid rgba(99,102,241,0.2)" }}>
+            <Sparkles size={18} style={{ color: "var(--accent-violet)" }} />
+          </div>
+          <div>
+            <h3 className="text-base font-bold" style={{ color: "var(--text-primary)" }}>
+              Smart Money Tips 💡
+            </h3>
+            <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+              Personalised advice based on your current spending breakdown
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-5 space-y-3">
+        {visibleTips.map((t, i) => (
+          <div key={i} className="p-4 rounded-2xl flex items-start gap-3"
+            style={{ background: "var(--bg-input)", border: "1px solid var(--border-default)" }}>
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: `${t.color}15`, border: `1px solid ${t.color}25` }}>
+              <span style={{ color: t.color }}>{t.icon}</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs leading-relaxed" style={{ color: "var(--text-secondary)" }}>{t.tip}</p>
+              <span className="inline-flex mt-2 text-[11px] font-bold px-2 py-0.5 rounded-full"
+                style={{ background: `${t.color}12`, color: t.color }}>
+                {t.saving}
+              </span>
+            </div>
+          </div>
+        ))}
+
+        {tips.length > 3 && (
+          <button
+            onClick={() => setExpanded(v => !v)}
+            className="w-full py-2 text-xs font-medium rounded-xl flex items-center justify-center gap-1 transition-all"
+            style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-default)", color: "var(--text-muted)", cursor: "pointer" }}>
+            {expanded ? <><ChevronUp size={13} /> Show less</> : <><ChevronDown size={13} /> Show {tips.length - 3} more tips</>}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Spending Breakdown Bar ─────────────────────────────────────── */
+const TYPE_CONFIG: Record<string, { icon: React.ReactNode; color: string; label: string; emoji: string }> = {
+  accommodation: { icon: <Home size={14} />,          color: "var(--accent-indigo)",  label: "Accommodation", emoji: "🏠" },
+  food:          { icon: <Utensils size={14} />,      color: "var(--accent-rose)",    label: "Dining Out",    emoji: "🍽️" },
+  gym:           { icon: <Dumbbell size={14} />,      color: "var(--accent-emerald)", label: "Gym",           emoji: "🏋️" },
+  travel:        { icon: <Bus size={14} />,           color: "var(--accent-sky)",     label: "Travel",        emoji: "🚌" },
+  grocery:       { icon: <ShoppingCart size={14} />,  color: "var(--accent-amber)",   label: "Groceries",     emoji: "🛒" },
+  utilities:     { icon: <Lightbulb size={14} />,     color: "var(--accent-orange)",  label: "Utilities",     emoji: "💡" },
+  misc:          { icon: <MoreHorizontal size={14} />, color: "var(--text-secondary)", label: "Misc",         emoji: "✨" },
+};
+
+/* ─── Other small helpers ─────────────────────────────────────────── */
 function SustainBadge({ s }: { s: string }) {
   const map: Record<string, { color: string; label: string; icon: string }> = {
     HIGHLY_SUSTAINABLE: { color: "var(--accent-emerald)", label: "Highly Sustainable", icon: "🟢" },
@@ -73,6 +411,7 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
   );
 }
 
+/* ─── Main Page ──────────────────────────────────────────────────── */
 export function DashboardPage() {
   const { user, token, logout } = useAuth();
   const navigate = useNavigate();
@@ -96,9 +435,7 @@ export function DashboardPage() {
     const load = async () => {
       try {
         const [histRes, statsRes] = await Promise.all([
-          fetch("/api/dashboard/history", {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
+          fetch("/api/dashboard/history", { headers: { Authorization: `Bearer ${token}` } }),
           fetch("/api/dashboard/stats"),
         ]);
         if (histRes.ok) setDashboard(await histRes.json());
@@ -115,17 +452,16 @@ export function DashboardPage() {
       return new Date(iso).toLocaleDateString("en-IN", {
         day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit",
       });
-    } catch {
-      return iso;
-    }
+    } catch { return iso; }
   };
 
   const latestSalary = dashboard?.history?.[0]?.monthly_salary;
-  const isNewUser = !loading && (!dashboard || dashboard.total_runs === 0);
+  const latestCity   = dashboard?.history?.[0]?.job_location?.split(",").pop()?.trim() || "";
+  const latestArea   = dashboard?.history?.[0]?.top_area || "";
+  const isNewUser    = !loading && (!dashboard || dashboard.total_runs === 0);
 
   return (
     <div className="min-h-screen" style={{ background: "var(--bg-primary)" }}>
-
       {/* ── Navbar ── */}
       <nav style={{
         position: "sticky", top: 0, zIndex: 50, padding: "14px 24px",
@@ -143,11 +479,7 @@ export function DashboardPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate("/plan")}
-              className="btn-primary"
-              style={{ padding: "8px 18px", fontSize: "0.82rem" }}
-            >
+            <button onClick={() => navigate("/plan")} className="btn-primary" style={{ padding: "8px 18px", fontSize: "0.82rem" }}>
               <Zap size={14} /> New Plan
             </button>
             <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
@@ -162,7 +494,6 @@ export function DashboardPage() {
       </nav>
 
       <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }} className="space-y-7">
-
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24">
             <div className="w-12 h-12 rounded-full animate-spin-slow"
@@ -188,21 +519,17 @@ export function DashboardPage() {
                 <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
                   {isNewUser
                     ? "You're all set! Start your first relocation plan to discover the best neighborhood for your lifestyle and budget."
-                    : `You've run ${dashboard?.total_runs} recommendation${dashboard!.total_runs > 1 ? "s" : ""}. Your personalized history and spending tracker are below.`}
+                    : `You've run ${dashboard?.total_runs} recommendation${dashboard!.total_runs > 1 ? "s" : ""}. Track all your monthly expenses below and keep more of your money.`}
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
-                <button
-                  onClick={() => navigate("/plan")}
-                  className="btn-primary"
-                >
-                  <Zap size={16} />
-                  {isNewUser ? "Start Planning" : "New Recommendation"}
+                <button onClick={() => navigate("/plan")} className="btn-primary">
+                  <Zap size={16} /> {isNewUser ? "Start Planning" : "New Recommendation"}
                 </button>
               </div>
             </div>
 
-            {/* ── How It Works (shown only to new users) ── */}
+            {/* ── How It Works (new users only) ── */}
             {isNewUser && (
               <div className="fade-in-up fade-in-up-1">
                 <h3 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{ color: "var(--text-secondary)" }}>
@@ -214,7 +541,7 @@ export function DashboardPage() {
                     { step: "1", icon: <Briefcase size={22} />, title: "Enter Work & City", desc: "Tell us your office location and target city", color: "var(--accent-indigo)" },
                     { step: "2", icon: <IndianRupee size={22} />, title: "Set Your Budget", desc: "Salary, EMI, and savings goal — we calculate the rest", color: "var(--accent-emerald)" },
                     { step: "3", icon: <Sparkles size={22} />, title: "AI Finds Your Areas", desc: "Ranked neighborhoods matched to your lifestyle", color: "var(--accent-violet)" },
-                    { step: "4", icon: <Wallet size={22} />, title: "Track Your Spending", desc: "Book options and watch savings update in real time", color: "var(--accent-amber)" },
+                    { step: "4", icon: <Wallet size={22} />, title: "Track Everything", desc: "Food, gym, travel, rent — all tracked here", color: "var(--accent-amber)" },
                   ].map((item) => (
                     <div key={item.step} className="glass-card p-5 text-center relative overflow-hidden">
                       <div className="absolute top-3 right-3 text-xs font-black opacity-20 text-5xl"
@@ -239,7 +566,18 @@ export function DashboardPage() {
             )}
 
             {/* ── Spending Tracker ── */}
-            <SpendingTrackerPanel salary={latestSalary} onStartPlanning={() => navigate("/plan")} />
+            <SpendingTrackerPanel
+              salary={latestSalary}
+              city={latestCity}
+              area={latestArea}
+              onStartPlanning={() => navigate("/plan")}
+            />
+
+            {/* ── Weekend Tips ── */}
+            <WeekendTipsPanel city={latestCity || "Bengaluru"} />
+
+            {/* ── Money Tips (reads live bookings from context) ── */}
+            <_MoneyTipsBridge salary={latestSalary || 0} />
 
             {/* ── City Stats ── */}
             {stats && (
@@ -249,12 +587,12 @@ export function DashboardPage() {
                   PLATFORM OVERVIEW
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  <StatCard icon={<Building2 size={16} style={{ color: "var(--accent-indigo)" }} />} label="Areas Covered" value={`${stats.areas_covered} Neighborhoods`} />
-                  <StatCard icon={<IndianRupee size={16} style={{ color: "var(--accent-emerald)" }} />} label="Avg Rent Range" value={stats.avg_rent_range} />
-                  <StatCard icon={<Clock size={16} style={{ color: "var(--accent-amber)" }} />} label="Avg Commute" value={`${stats.avg_commute_mins} minutes`} />
-                  <StatCard icon={<Zap size={16} style={{ color: "var(--accent-violet)" }} />} label="Top IT Hub" value={stats.top_it_hub} />
-                  <StatCard icon={<Star size={16} style={{ color: "var(--accent-sky)" }} />} label="Top Lifestyle Area" value={stats.top_lifestyle} />
-                  <StatCard icon={<TrendingUp size={16} style={{ color: "var(--accent-orange)" }} />} label="Best Budget Area" value={stats.top_budget_area} />
+                  <StatCard icon={<Building2 size={16} style={{ color: "var(--accent-indigo)" }} />}   label="Areas Covered"     value={`${stats.areas_covered} Neighborhoods`} />
+                  <StatCard icon={<IndianRupee size={16} style={{ color: "var(--accent-emerald)" }} />} label="Avg Rent Range"     value={stats.avg_rent_range} />
+                  <StatCard icon={<Clock size={16} style={{ color: "var(--accent-amber)" }} />}        label="Avg Commute"       value={`${stats.avg_commute_mins} minutes`} />
+                  <StatCard icon={<Zap size={16} style={{ color: "var(--accent-violet)" }} />}         label="Top IT Hub"        value={stats.top_it_hub} />
+                  <StatCard icon={<Star size={16} style={{ color: "var(--accent-sky)" }} />}           label="Top Lifestyle Area" value={stats.top_lifestyle} />
+                  <StatCard icon={<TrendingUp size={16} style={{ color: "var(--accent-orange)" }} />}  label="Best Budget Area"  value={stats.top_budget_area} />
                 </div>
               </div>
             )}
@@ -266,7 +604,6 @@ export function DashboardPage() {
                   <Clock size={15} style={{ color: "var(--accent-indigo)" }} />
                   YOUR RECOMMENDATION HISTORY
                 </h3>
-
                 <div className="space-y-3">
                   {dashboard!.history.map((entry, i) => (
                     <div key={i} className="glass-card p-5 hover:cursor-pointer"
@@ -279,7 +616,6 @@ export function DashboardPage() {
                           style={{ background: "var(--gradient-primary)" }}>
                           <span className="text-white font-black text-sm">#{i + 1}</span>
                         </div>
-
                         <div className="flex-1 min-w-0">
                           <div className="flex flex-wrap items-center gap-2 mb-1">
                             <span className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>
@@ -294,14 +630,11 @@ export function DashboardPage() {
                             <span className="flex items-center gap-1"><Clock size={11} /> {formatDate(entry.timestamp)}</span>
                           </div>
                         </div>
-
                         <div className="flex-shrink-0 text-right">
                           <div className="text-base font-bold" style={{ color: "var(--accent-emerald)" }}>
                             {entry.top_area}
                           </div>
-                          <div className="text-xs" style={{ color: "var(--text-muted)" }}>
-                            Score: {entry.top_area_score}/100
-                          </div>
+                          <div className="text-xs" style={{ color: "var(--text-muted)" }}>Score: {entry.top_area_score}/100</div>
                           <div className="flex gap-1 mt-1 justify-end">
                             {entry.all_top_areas.map((a, j) => (
                               <span key={j} className="text-[10px] px-1.5 py-0.5 rounded-md font-medium"
@@ -311,7 +644,6 @@ export function DashboardPage() {
                             ))}
                           </div>
                         </div>
-
                         <ChevronRight size={18} style={{ color: "var(--text-muted)" }} />
                       </div>
                     </div>
@@ -345,7 +677,6 @@ export function DashboardPage() {
         )}
       </main>
 
-      {/* Restaurant Discovery Modal */}
       <DiscoveryModal
         show={showDiscovery}
         onClose={() => {
@@ -359,39 +690,32 @@ export function DashboardPage() {
   );
 }
 
-/* ─── Spending Tracker Panel ───────────────────────────────────────── */
-
-const TYPE_CONFIG: Record<string, { icon: React.ReactNode; color: string; label: string }> = {
-  accommodation: { icon: <Home size={14} />,     color: "var(--accent-indigo)",  label: "🏠 Accommodation" },
-  gym:           { icon: <Dumbbell size={14} />, color: "var(--accent-emerald)", label: "🏋️ Gym" },
-  food:          { icon: <Utensils size={14} />, color: "var(--accent-rose)",    label: "🍽️ Restaurant" },
-};
-
+/* ─── Spending Tracker Panel ────────────────────────────────────── */
 function SpendingTrackerPanel({
   salary,
+  city,
+  area,
   onStartPlanning,
 }: {
   salary?: number;
+  city: string;
+  area: string;
   onStartPlanning: () => void;
 }) {
-  const { bookings, removeBooking, totalMonthlySpend, getSavings, clearBookings } = useBookings();
+  const { bookings, addBooking, removeBooking, totalMonthlySpend, getSavings, clearBookings } = useBookings();
   const [showAll, setShowAll] = useState(false);
 
-  const monthlyIncome = salary || 0;
-  const monthlySavings = getSavings(monthlyIncome, 0);
-  const savingsPercent = monthlyIncome > 0 ? Math.round((monthlySavings / monthlyIncome) * 100) : 0;
+  const monthlyIncome   = salary || 0;
+  const monthlySavings  = getSavings(monthlyIncome, 0);
+  const savingsPercent  = monthlyIncome > 0 ? Math.round((monthlySavings / monthlyIncome) * 100) : 0;
 
-  // Group bookings by type
   const grouped = bookings.reduce<Record<string, BookedItem[]>>((acc, b) => {
     (acc[b.type] = acc[b.type] || []).push(b);
     return acc;
   }, {});
 
-  const visibleBookings = showAll ? bookings : bookings.slice(0, 4);
-
   return (
-    <div className="fade-in-up fade-in-up-1 glass-card overflow-hidden"
-      style={{ borderColor: "rgba(129,140,248,0.2)" }}>
+    <div className="fade-in-up fade-in-up-1 glass-card overflow-hidden" style={{ borderColor: "rgba(129,140,248,0.2)" }}>
 
       {/* Header */}
       <div className="p-6 pb-5" style={{ borderBottom: "1px solid var(--border-default)" }}>
@@ -403,19 +727,19 @@ function SpendingTrackerPanel({
             </div>
             <div>
               <h3 className="text-base font-bold" style={{ color: "var(--text-primary)" }}>
-                My Spending Tracker
+                My Monthly Expense Tracker
               </h3>
               <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                 {bookings.length === 0
-                  ? "Book accommodations, gyms & restaurants from your plan results"
-                  : `${bookings.length} item${bookings.length > 1 ? "s" : ""} booked — tracking monthly spend`}
+                  ? "Track rent, food, gym, travel, groceries & more"
+                  : `${bookings.length} expense${bookings.length > 1 ? "s" : ""} tracked · ${Object.keys(grouped).length} categories`}
               </p>
             </div>
           </div>
           {bookings.length > 0 && (
             <button onClick={clearBookings}
               className="text-xs font-medium px-3 py-1.5 rounded-lg transition-all"
-              style={{ background: "rgba(251,113,133,0.1)", color: "var(--accent-rose)", border: "1px solid rgba(251,113,133,0.2)" }}>
+              style={{ background: "rgba(251,113,133,0.1)", color: "var(--accent-rose)", border: "1px solid rgba(251,113,133,0.2)", cursor: "pointer" }}>
               Clear All
             </button>
           )}
@@ -424,27 +748,29 @@ function SpendingTrackerPanel({
 
       {bookings.length === 0 ? (
         /* ── Empty State ── */
-        <div className="p-8 text-center">
-          <div className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-4"
-            style={{ background: "rgba(129,140,248,0.08)", border: "1px solid rgba(129,140,248,0.15)" }}>
-            <PiggyBank size={28} style={{ color: "var(--accent-indigo)" }} />
+        <div className="p-8">
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-4"
+              style={{ background: "rgba(129,140,248,0.08)", border: "1px solid rgba(129,140,248,0.15)" }}>
+              <PiggyBank size={28} style={{ color: "var(--accent-indigo)" }} />
+            </div>
+            <h4 className="font-bold mb-2" style={{ color: "var(--text-primary)" }}>Start tracking your monthly budget</h4>
+            <p className="text-sm mb-4" style={{ color: "var(--text-muted)", maxWidth: 400, margin: "0 auto 16px" }}>
+              Book accommodations, restaurants & gyms from your plan — or manually add travel, grocery, and utility expenses below.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-2 mb-6 text-xs" style={{ color: "var(--text-muted)" }}>
+              {["🏠 Rent / PG", "🍽️ Dining out", "🏋️ Gym membership", "🚌 Daily commute", "🛒 Groceries", "💡 Bills"].map((s) => (
+                <span key={s} className="px-3 py-1.5 rounded-full"
+                  style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-default)" }}>
+                  {s}
+                </span>
+              ))}
+            </div>
+            <button onClick={onStartPlanning} className="btn-primary">
+              <Plus size={16} /> Start Planning to Add Expenses
+            </button>
           </div>
-          <h4 className="font-bold mb-2" style={{ color: "var(--text-primary)" }}>No bookings yet</h4>
-          <p className="text-sm mb-2" style={{ color: "var(--text-muted)", maxWidth: 380, margin: "0 auto 12px" }}>
-            After you run a plan, you can "book" accommodations, gyms, and restaurants. 
-            Your spending will be tracked here in real time so you always know your monthly budget.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-5 text-xs" style={{ color: "var(--text-muted)" }}>
-            {["🏠 Choose a PG or flat", "🏋️ Book a gym", "🍽️ Save a restaurant", "💰 See live savings rate"].map((s) => (
-              <span key={s} className="px-3 py-1.5 rounded-full flex items-center gap-1.5"
-                style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-default)" }}>
-                {s}
-              </span>
-            ))}
-          </div>
-          <button onClick={onStartPlanning} className="btn-primary">
-            <Plus size={16} /> Start Planning
-          </button>
+          <AddExpenseInline onAdd={addBooking} city={city} area={area} />
         </div>
       ) : (
         <div className="p-6">
@@ -456,7 +782,9 @@ function SpendingTrackerPanel({
               <p className="text-xl font-extrabold" style={{ color: "var(--accent-indigo)" }}>
                 {fmt(totalMonthlySpend)}
               </p>
-              <p className="text-[10px] mt-1" style={{ color: "var(--text-muted)" }}>across {bookings.length} items</p>
+              <p className="text-[10px] mt-1" style={{ color: "var(--text-muted)" }}>
+                {bookings.length} item{bookings.length > 1 ? "s" : ""} · {Object.keys(grouped).length} categories
+              </p>
             </div>
 
             {monthlyIncome > 0 ? (
@@ -465,13 +793,13 @@ function SpendingTrackerPanel({
                   background: monthlySavings >= 0 ? "rgba(52,211,153,0.08)" : "rgba(251,113,133,0.08)",
                   border: `1px solid ${monthlySavings >= 0 ? "rgba(52,211,153,0.2)" : "rgba(251,113,133,0.2)"}`,
                 }}>
-                  <p className="text-xs font-medium mb-1" style={{ color: "var(--text-muted)" }}>Est. Savings</p>
+                  <p className="text-xs font-medium mb-1" style={{ color: "var(--text-muted)" }}>You Keep</p>
                   <p className="text-xl font-extrabold"
                     style={{ color: monthlySavings >= 0 ? "var(--accent-emerald)" : "var(--accent-rose)" }}>
                     {fmt(Math.abs(monthlySavings))}
                   </p>
                   <p className="text-[10px] mt-1" style={{ color: "var(--text-muted)" }}>
-                    {monthlySavings >= 0 ? "monthly savings" : "over budget"}
+                    {monthlySavings >= 0 ? "saved this month 🎉" : "over budget ⚠️"}
                   </p>
                 </div>
                 <div className="p-4 rounded-xl text-center" style={{ background: "var(--bg-elevated)" }}>
@@ -496,7 +824,33 @@ function SpendingTrackerPanel({
             )}
           </div>
 
-          {/* Budget Allocation Bar */}
+          {/* ── Category Breakdown ── */}
+          {Object.keys(grouped).length > 1 && (
+            <div className="mb-6">
+              <p className="text-xs font-semibold mb-3" style={{ color: "var(--text-muted)" }}>SPEND BY CATEGORY</p>
+              <div className="space-y-2">
+                {Object.entries(grouped).map(([type, items]) => {
+                  const cfg = TYPE_CONFIG[type] || TYPE_CONFIG.misc;
+                  const typeTotal = items.reduce((s, i) => s + i.monthlyCost, 0);
+                  const pct = totalMonthlySpend > 0 ? Math.round((typeTotal / totalMonthlySpend) * 100) : 0;
+                  return (
+                    <div key={type} className="flex items-center gap-3">
+                      <span className="text-sm w-5 text-center">{cfg.emoji}</span>
+                      <span className="text-xs w-28 font-medium" style={{ color: "var(--text-secondary)" }}>{cfg.label}</span>
+                      <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: "var(--bg-input)" }}>
+                        <div className="h-full rounded-full transition-all duration-700"
+                          style={{ width: `${pct}%`, background: cfg.color }} />
+                      </div>
+                      <span className="text-xs font-bold w-16 text-right" style={{ color: cfg.color }}>{fmt(typeTotal)}</span>
+                      <span className="text-[10px] w-8 text-right" style={{ color: "var(--text-muted)" }}>{pct}%</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* ── Budget Progress Bar ── */}
           {monthlyIncome > 0 && (
             <div className="mb-6">
               <div className="flex justify-between text-xs mb-2">
@@ -525,17 +879,17 @@ function SpendingTrackerPanel({
             </div>
           )}
 
-          {/* Booked Items by Category */}
-          <div className="space-y-5">
+          {/* ── Booked Items ── */}
+          <div className="space-y-5 mb-4">
             {Object.entries(grouped).map(([type, items]) => {
-              const cfg = TYPE_CONFIG[type] || TYPE_CONFIG.accommodation;
+              const cfg = TYPE_CONFIG[type] || TYPE_CONFIG.misc;
               const typeTotal = items.reduce((s, i) => s + i.monthlyCost, 0);
               return (
                 <div key={type}>
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5"
                       style={{ color: cfg.color }}>
-                      {cfg.label}
+                      {cfg.emoji} {cfg.label}
                     </h4>
                     <span className="text-xs font-bold px-2 py-0.5 rounded-full"
                       style={{ background: `${cfg.color}15`, color: cfg.color }}>
@@ -555,7 +909,7 @@ function SpendingTrackerPanel({
                             {item.name}
                           </p>
                           <p className="text-xs truncate" style={{ color: "var(--text-muted)" }}>
-                            {item.area}, {item.city} · {item.details}
+                            {item.area}{item.city && item.area ? `, ${item.city}` : item.city} · {item.details}
                           </p>
                         </div>
                         <div className="flex items-center gap-3 shrink-0">
@@ -577,50 +931,49 @@ function SpendingTrackerPanel({
             })}
           </div>
 
-          {/* Show more / less toggle */}
-          {bookings.length > 4 && (
+          {bookings.length > 5 && (
             <button
               onClick={() => setShowAll((v) => !v)}
-              className="w-full mt-3 py-2 text-xs font-medium rounded-xl transition-all"
-              style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-default)", color: "var(--text-muted)" }}
-            >
+              className="w-full mb-4 py-2 text-xs font-medium rounded-xl transition-all"
+              style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-default)", color: "var(--text-muted)", cursor: "pointer" }}>
               {showAll ? "Show less" : `Show all ${bookings.length} items`}
             </button>
           )}
 
-          {/* AI Savings Insight */}
+          {/* ── Savings Insight ── */}
           {monthlyIncome > 0 && (
-            <div className="mt-5 p-4 rounded-xl flex items-start gap-3"
+            <div className="mb-4 p-4 rounded-xl flex items-start gap-3"
               style={{ background: "linear-gradient(135deg, rgba(52,211,153,0.05), rgba(56,189,248,0.05))", border: "1px solid rgba(52,211,153,0.15)" }}>
               <PiggyBank size={18} className="shrink-0 mt-0.5" style={{ color: "var(--accent-emerald)" }} />
               <div>
                 <p className="text-xs font-semibold mb-1" style={{ color: "var(--accent-emerald)" }}>
-                  Savings Insight
+                  💰 You can keep {fmt(Math.max(0, monthlySavings))} this month
                 </p>
                 <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
                   {monthlySavings >= monthlyIncome * 0.25
-                    ? `Excellent! You're saving ${savingsPercent}% of income — well above the 20% benchmark. You're on track for financial independence.`
+                    ? `Excellent! You're saving ${savingsPercent}% of income — well above the 20% benchmark. Consider a SIP or recurring deposit with the surplus.`
                     : monthlySavings >= monthlyIncome * 0.15
-                    ? `Good start! ${savingsPercent}% savings rate. Consider switching to a PG or reducing dining out to hit the 20% target.`
+                    ? `Good progress — ${savingsPercent}% savings rate. Trimming dining out by 20% can push you above the 20% savings target.`
                     : monthlySavings > 0
-                    ? `Your savings rate of ${savingsPercent}% is low. Consider a more affordable accommodation type or area to increase savings.`
-                    : `⚠️ Your expenses exceed income by ${fmt(Math.abs(monthlySavings))}. Remove some bookings or choose a cheaper area.`}
+                    ? `Your savings rate of ${savingsPercent}% is low. Try a cheaper accommodation type or cook at home more often.`
+                    : `⚠️ Expenses exceed income by ${fmt(Math.abs(monthlySavings))}. Remove some bookings or look for a more budget-friendly area.`}
                 </p>
               </div>
             </div>
           )}
 
-          {/* Add more button */}
-          <div className="mt-4 flex justify-center">
-            <button onClick={onStartPlanning}
-              className="flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-xl transition-all"
-              style={{ background: "rgba(99,102,241,0.08)", color: "var(--accent-indigo)", border: "1px solid rgba(99,102,241,0.2)" }}>
-              <Plus size={14} /> Run new plan to add more items
-            </button>
-          </div>
+          {/* ── Add More Expenses ── */}
+          <AddExpenseInline onAdd={addBooking} city={city} area={area} />
         </div>
       )}
     </div>
   );
 }
 
+/* ─── Connect Money Tips to live bookings ─────────────────────────
+   We need to forward live bookings into MoneyTipsPanel, so we create
+   a connector component that pulls from context and passes it down.   */
+function _MoneyTipsBridge({ salary }: { salary: number }) {
+  const { bookings, totalMonthlySpend } = useBookings();
+  return <MoneyTipsPanel salary={salary} spend={totalMonthlySpend} bookings={bookings} />;
+}
