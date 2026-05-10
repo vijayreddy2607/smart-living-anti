@@ -27,7 +27,7 @@ const COLORS = ["#818cf8", "#a78bfa", "#c4b5fd"]; // indigo → violet
 const fmt = (n: number) => `₹${n.toLocaleString("en-IN")}`;
 
 // Custom Tooltip
-function CustomTooltip({ active, payload, goalAmount }: any) {
+function CustomTooltip({ active, payload, goalAmount, goalMonths }: any) {
   if (!active || !payload?.length) return null;
   const d = payload[0]?.payload;
   if (!d) return null;
