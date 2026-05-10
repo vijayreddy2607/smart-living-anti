@@ -1,0 +1,230 @@
+[
+  {
+    "area_id": "A001", "name": "Kharadi", "city": "Pune",
+    "rent_estimates": { "PG": 8000, "SHARED_FLAT": 7000, "1BHK": 14000, "2BHK": 22000 },
+    "commute_minutes": { "Kharadi": 5, "Viman Nagar": 15, "Hadapsar": 20, "Hinjewadi": 50, "Baner": 40 },
+    "lifestyle_tags": ["Social & Active", "Flexible"], "noise_level": "medium",
+    "safety_score": 8.2, "food_options": ["home", "outside", "mixed"],
+    "amenities": ["gym", "metro_nearby", "market", "hospital", "atm"], "overall_rating": 4.2
+  },
+  {
+    "area_id": "A002", "name": "Viman Nagar", "city": "Pune",
+    "rent_estimates": { "PG": 9000, "SHARED_FLAT": 8000, "1BHK": 16000, "2BHK": 25000 },
+    "commute_minutes": { "Kharadi": 15, "Viman Nagar": 5, "Hadapsar": 25, "Hinjewadi": 55, "Baner": 45 },
+    "lifestyle_tags": ["Social & Active", "Flexible"], "noise_level": "high",
+    "safety_score": 7.8, "food_options": ["home", "outside", "mixed"],
+    "amenities": ["gym", "airport_nearby", "market", "hospital", "atm", "mall"], "overall_rating": 4.0
+  },
+  {
+    "area_id": "A003", "name": "Hadapsar", "city": "Pune",
+    "rent_estimates": { "PG": 6500, "SHARED_FLAT": 5500, "1BHK": 11000, "2BHK": 17000 },
+    "commute_minutes": { "Kharadi": 20, "Viman Nagar": 25, "Hadapsar": 5, "Hinjewadi": 55, "Baner": 50 },
+    "lifestyle_tags": ["Quiet & Peaceful", "Flexible"], "noise_level": "low",
+    "safety_score": 7.5, "food_options": ["home", "mixed"],
+    "amenities": ["market", "hospital", "atm", "park"], "overall_rating": 3.8
+  },
+  {
+    "area_id": "A004", "name": "Hinjewadi", "city": "Pune",
+    "rent_estimates": { "PG": 7500, "SHARED_FLAT": 6500, "1BHK": 13000, "2BHK": 20000 },
+    "commute_minutes": { "Kharadi": 50, "Viman Nagar": 55, "Hadapsar": 55, "Hinjewadi": 5, "Baner": 15 },
+    "lifestyle_tags": ["Social & Active", "Quiet & Peaceful"], "noise_level": "medium",
+    "safety_score": 7.9, "food_options": ["home", "outside", "mixed"],
+    "amenities": ["gym", "market", "atm", "park", "it_park"], "overall_rating": 4.1
+  },
+  {
+    "area_id": "A005", "name": "Baner", "city": "Pune",
+    "rent_estimates": { "PG": 9500, "SHARED_FLAT": 8500, "1BHK": 17000, "2BHK": 27000 },
+    "commute_minutes": { "Kharadi": 40, "Viman Nagar": 45, "Hadapsar": 50, "Hinjewadi": 15, "Baner": 5 },
+    "lifestyle_tags": ["Social & Active", "Flexible"], "noise_level": "medium",
+    "safety_score": 8.5, "food_options": ["home", "outside", "mixed"],
+    "amenities": ["gym", "mall", "market", "hospital", "atm", "park", "nightlife"], "overall_rating": 4.5
+  },
+  {
+    "area_id": "A006", "name": "Wakad", "city": "Pune",
+    "rent_estimates": { "PG": 7000, "SHARED_FLAT": 6000, "1BHK": 12000, "2BHK": 18000 },
+    "commute_minutes": { "Kharadi": 45, "Viman Nagar": 50, "Hadapsar": 55, "Hinjewadi": 10, "Baner": 12 },
+    "lifestyle_tags": ["Quiet & Peaceful", "Flexible"], "noise_level": "low",
+    "safety_score": 8.0, "food_options": ["home", "mixed"],
+    "amenities": ["gym", "market", "atm", "park", "hospital"], "overall_rating": 4.0
+  },
+  {
+    "area_id": "A007", "name": "Koregaon Park", "city": "Pune",
+    "rent_estimates": { "PG": 11000, "SHARED_FLAT": 10000, "1BHK": 20000, "2BHK": 32000 },
+    "commute_minutes": { "Kharadi": 25, "Viman Nagar": 20, "Hadapsar": 30, "Hinjewadi": 50, "Baner": 35 },
+    "lifestyle_tags": ["Social & Active"], "noise_level": "high",
+    "safety_score": 7.6, "food_options": ["outside", "mixed"],
+    "amenities": ["gym", "mall", "nightlife", "hospital", "atm", "cafe", "park"], "overall_rating": 4.3
+  },
+  {
+    "area_id": "A008", "name": "Shivajinagar", "city": "Pune",
+    "rent_estimates": { "PG": 6000, "SHARED_FLAT": 5000, "1BHK": 10000, "2BHK": 16000 },
+    "commute_minutes": { "Kharadi": 30, "Viman Nagar": 25, "Hadapsar": 35, "Hinjewadi": 45, "Baner": 30 },
+    "lifestyle_tags": ["Flexible"], "noise_level": "high",
+    "safety_score": 6.8, "food_options": ["home", "outside", "mixed"],
+    "amenities": ["market", "hospital", "atm", "university", "bus_stand", "railway"], "overall_rating": 3.6
+  },
+
+  {
+    "area_id": "B001", "name": "Whitefield", "city": "Bengaluru",
+    "rent_estimates": { "PG": 10000, "SHARED_FLAT": 9000, "1BHK": 18000, "2BHK": 28000 },
+    "commute_minutes": { "Whitefield": 5, "Electronic City": 55, "Koramangala": 45, "Marathahalli": 20, "Bellandur": 25 },
+    "lifestyle_tags": ["Social & Active", "Flexible"], "noise_level": "medium",
+    "safety_score": 8.3, "food_options": ["home", "outside", "mixed"],
+    "amenities": ["gym", "mall", "market", "hospital", "atm", "park", "it_park"], "overall_rating": 4.3
+  },
+  {
+    "area_id": "B002", "name": "Koramangala", "city": "Bengaluru",
+    "rent_estimates": { "PG": 13000, "SHARED_FLAT": 12000, "1BHK": 24000, "2BHK": 38000 },
+    "commute_minutes": { "Whitefield": 45, "Electronic City": 30, "Koramangala": 5, "Marathahalli": 25, "Bellandur": 20 },
+    "lifestyle_tags": ["Social & Active"], "noise_level": "high",
+    "safety_score": 8.0, "food_options": ["outside", "mixed"],
+    "amenities": ["gym", "mall", "nightlife", "hospital", "atm", "cafe", "startup_hub"], "overall_rating": 4.6
+  },
+  {
+    "area_id": "B003", "name": "HSR Layout", "city": "Bengaluru",
+    "rent_estimates": { "PG": 11000, "SHARED_FLAT": 10000, "1BHK": 20000, "2BHK": 32000 },
+    "commute_minutes": { "Whitefield": 40, "Electronic City": 25, "Koramangala": 20, "Marathahalli": 30, "Bellandur": 15 },
+    "lifestyle_tags": ["Quiet & Peaceful", "Flexible"], "noise_level": "medium",
+    "safety_score": 8.6, "food_options": ["home", "outside", "mixed"],
+    "amenities": ["gym", "market", "hospital", "atm", "park", "cafe"], "overall_rating": 4.5
+  },
+  {
+    "area_id": "B004", "name": "Indiranagar", "city": "Bengaluru",
+    "rent_estimates": { "PG": 14000, "SHARED_FLAT": 13000, "1BHK": 26000, "2BHK": 42000 },
+    "commute_minutes": { "Whitefield": 40, "Electronic City": 40, "Koramangala": 25, "Marathahalli": 30, "Bellandur": 35 },
+    "lifestyle_tags": ["Social & Active"], "noise_level": "high",
+    "safety_score": 7.8, "food_options": ["outside", "mixed"],
+    "amenities": ["gym", "mall", "nightlife", "hospital", "atm", "metro_nearby", "cafe"], "overall_rating": 4.4
+  },
+  {
+    "area_id": "B005", "name": "Electronic City", "city": "Bengaluru",
+    "rent_estimates": { "PG": 7500, "SHARED_FLAT": 6500, "1BHK": 13000, "2BHK": 20000 },
+    "commute_minutes": { "Whitefield": 55, "Electronic City": 5, "Koramangala": 30, "Marathahalli": 35, "Bellandur": 28 },
+    "lifestyle_tags": ["Quiet & Peaceful", "Flexible"], "noise_level": "low",
+    "safety_score": 7.7, "food_options": ["home", "mixed"],
+    "amenities": ["gym", "market", "atm", "park", "it_park", "hospital"], "overall_rating": 3.9
+  },
+
+  {
+    "area_id": "H001", "name": "HITEC City", "city": "Hyderabad",
+    "rent_estimates": { "PG": 9000, "SHARED_FLAT": 8000, "1BHK": 16000, "2BHK": 25000 },
+    "commute_minutes": { "HITEC City": 5, "Gachibowli": 15, "Madhapur": 10, "Uppal": 40, "Nanakramguda": 20 },
+    "lifestyle_tags": ["Social & Active", "Flexible"], "noise_level": "high",
+    "safety_score": 8.1, "food_options": ["home", "outside", "mixed"],
+    "amenities": ["gym", "mall", "market", "hospital", "atm", "it_park", "metro_nearby"], "overall_rating": 4.4
+  },
+  {
+    "area_id": "H002", "name": "Gachibowli", "city": "Hyderabad",
+    "rent_estimates": { "PG": 8500, "SHARED_FLAT": 7500, "1BHK": 15000, "2BHK": 23000 },
+    "commute_minutes": { "HITEC City": 15, "Gachibowli": 5, "Madhapur": 20, "Uppal": 45, "Nanakramguda": 15 },
+    "lifestyle_tags": ["Social & Active", "Quiet & Peaceful"], "noise_level": "medium",
+    "safety_score": 8.4, "food_options": ["home", "outside", "mixed"],
+    "amenities": ["gym", "market", "hospital", "atm", "park", "university", "it_park"], "overall_rating": 4.3
+  },
+  {
+    "area_id": "H003", "name": "Kondapur", "city": "Hyderabad",
+    "rent_estimates": { "PG": 7500, "SHARED_FLAT": 6500, "1BHK": 13000, "2BHK": 20000 },
+    "commute_minutes": { "HITEC City": 20, "Gachibowli": 25, "Madhapur": 15, "Uppal": 50, "Nanakramguda": 25 },
+    "lifestyle_tags": ["Quiet & Peaceful", "Flexible"], "noise_level": "medium",
+    "safety_score": 8.2, "food_options": ["home", "mixed"],
+    "amenities": ["gym", "market", "atm", "park", "hospital"], "overall_rating": 4.1
+  },
+  {
+    "area_id": "H004", "name": "Madhapur", "city": "Hyderabad",
+    "rent_estimates": { "PG": 10000, "SHARED_FLAT": 9000, "1BHK": 18000, "2BHK": 28000 },
+    "commute_minutes": { "HITEC City": 10, "Gachibowli": 20, "Madhapur": 5, "Uppal": 45, "Nanakramguda": 18 },
+    "lifestyle_tags": ["Social & Active", "Flexible"], "noise_level": "medium",
+    "safety_score": 8.0, "food_options": ["home", "outside", "mixed"],
+    "amenities": ["gym", "mall", "market", "hospital", "atm", "nightlife"], "overall_rating": 4.3
+  },
+  {
+    "area_id": "H005", "name": "Banjara Hills", "city": "Hyderabad",
+    "rent_estimates": { "PG": 13000, "SHARED_FLAT": 12000, "1BHK": 24000, "2BHK": 38000 },
+    "commute_minutes": { "HITEC City": 30, "Gachibowli": 25, "Madhapur": 28, "Uppal": 35, "Nanakramguda": 32 },
+    "lifestyle_tags": ["Social & Active"], "noise_level": "medium",
+    "safety_score": 7.9, "food_options": ["outside", "mixed"],
+    "amenities": ["gym", "mall", "nightlife", "hospital", "atm", "cafe", "park"], "overall_rating": 4.2
+  },
+
+  {
+    "area_id": "C001", "name": "Sholinganallur", "city": "Chennai",
+    "rent_estimates": { "PG": 8000, "SHARED_FLAT": 7000, "1BHK": 14000, "2BHK": 22000 },
+    "commute_minutes": { "Sholinganallur": 5, "Perungudi": 15, "Guindy": 35, "Ambattur": 55, "OMR": 10 },
+    "lifestyle_tags": ["Social & Active", "Flexible"], "noise_level": "medium",
+    "safety_score": 7.9, "food_options": ["home", "outside", "mixed"],
+    "amenities": ["gym", "market", "hospital", "atm", "park", "it_park"], "overall_rating": 4.0
+  },
+  {
+    "area_id": "C002", "name": "Perungudi", "city": "Chennai",
+    "rent_estimates": { "PG": 8500, "SHARED_FLAT": 7500, "1BHK": 15000, "2BHK": 23000 },
+    "commute_minutes": { "Sholinganallur": 15, "Perungudi": 5, "Guindy": 25, "Ambattur": 50, "OMR": 12 },
+    "lifestyle_tags": ["Flexible", "Quiet & Peaceful"], "noise_level": "low",
+    "safety_score": 8.0, "food_options": ["home", "mixed"],
+    "amenities": ["gym", "market", "atm", "park", "hospital", "it_park"], "overall_rating": 4.0
+  },
+  {
+    "area_id": "C003", "name": "Adyar", "city": "Chennai",
+    "rent_estimates": { "PG": 11000, "SHARED_FLAT": 10000, "1BHK": 20000, "2BHK": 32000 },
+    "commute_minutes": { "Sholinganallur": 30, "Perungudi": 25, "Guindy": 20, "Ambattur": 45, "OMR": 28 },
+    "lifestyle_tags": ["Quiet & Peaceful", "Social & Active"], "noise_level": "medium",
+    "safety_score": 8.5, "food_options": ["home", "outside", "mixed"],
+    "amenities": ["gym", "mall", "beach_nearby", "hospital", "atm", "cafe", "park"], "overall_rating": 4.4
+  },
+  {
+    "area_id": "C004", "name": "OMR (Thoraipakkam)", "city": "Chennai",
+    "rent_estimates": { "PG": 7500, "SHARED_FLAT": 6500, "1BHK": 13000, "2BHK": 20000 },
+    "commute_minutes": { "Sholinganallur": 10, "Perungudi": 12, "Guindy": 30, "Ambattur": 55, "OMR": 5 },
+    "lifestyle_tags": ["Flexible"], "noise_level": "medium",
+    "safety_score": 7.6, "food_options": ["home", "mixed"],
+    "amenities": ["gym", "market", "atm", "park", "hospital"], "overall_rating": 3.9
+  },
+  {
+    "area_id": "C005", "name": "Velachery", "city": "Chennai",
+    "rent_estimates": { "PG": 7000, "SHARED_FLAT": 6000, "1BHK": 12000, "2BHK": 19000 },
+    "commute_minutes": { "Sholinganallur": 20, "Perungudi": 18, "Guindy": 15, "Ambattur": 40, "OMR": 22 },
+    "lifestyle_tags": ["Quiet & Peaceful", "Flexible"], "noise_level": "medium",
+    "safety_score": 7.8, "food_options": ["home", "outside", "mixed"],
+    "amenities": ["gym", "mall", "metro_nearby", "market", "hospital", "atm"], "overall_rating": 4.1
+  },
+
+  {
+    "area_id": "M001", "name": "Powai", "city": "Mumbai",
+    "rent_estimates": { "PG": 14000, "SHARED_FLAT": 12000, "1BHK": 28000, "2BHK": 45000 },
+    "commute_minutes": { "Powai": 5, "BKC": 30, "Andheri": 20, "Vikhroli": 15, "Lower Parel": 40 },
+    "lifestyle_tags": ["Social & Active", "Flexible"], "noise_level": "medium",
+    "safety_score": 8.7, "food_options": ["home", "outside", "mixed"],
+    "amenities": ["gym", "mall", "lake_nearby", "hospital", "atm", "park", "it_park"], "overall_rating": 4.6
+  },
+  {
+    "area_id": "M002", "name": "Andheri East", "city": "Mumbai",
+    "rent_estimates": { "PG": 12000, "SHARED_FLAT": 11000, "1BHK": 24000, "2BHK": 38000 },
+    "commute_minutes": { "Powai": 20, "BKC": 25, "Andheri": 5, "Vikhroli": 20, "Lower Parel": 35 },
+    "lifestyle_tags": ["Social & Active", "Flexible"], "noise_level": "high",
+    "safety_score": 7.8, "food_options": ["home", "outside", "mixed"],
+    "amenities": ["gym", "mall", "airport_nearby", "hospital", "atm", "metro_nearby", "railway"], "overall_rating": 4.2
+  },
+  {
+    "area_id": "M003", "name": "BKC (Bandra Kurla)", "city": "Mumbai",
+    "rent_estimates": { "PG": 18000, "SHARED_FLAT": 16000, "1BHK": 38000, "2BHK": 60000 },
+    "commute_minutes": { "Powai": 30, "BKC": 5, "Andheri": 25, "Vikhroli": 30, "Lower Parel": 20 },
+    "lifestyle_tags": ["Social & Active"], "noise_level": "high",
+    "safety_score": 8.2, "food_options": ["outside", "mixed"],
+    "amenities": ["gym", "mall", "nightlife", "hospital", "atm", "metro_nearby", "cafe"], "overall_rating": 4.4
+  },
+  {
+    "area_id": "M004", "name": "Thane", "city": "Mumbai",
+    "rent_estimates": { "PG": 9000, "SHARED_FLAT": 8000, "1BHK": 18000, "2BHK": 28000 },
+    "commute_minutes": { "Powai": 25, "BKC": 45, "Andheri": 35, "Vikhroli": 20, "Lower Parel": 55 },
+    "lifestyle_tags": ["Quiet & Peaceful", "Flexible"], "noise_level": "medium",
+    "safety_score": 8.3, "food_options": ["home", "outside", "mixed"],
+    "amenities": ["gym", "mall", "park", "hospital", "atm", "railway", "market"], "overall_rating": 4.2
+  },
+  {
+    "area_id": "M005", "name": "Navi Mumbai", "city": "Mumbai",
+    "rent_estimates": { "PG": 8000, "SHARED_FLAT": 7000, "1BHK": 16000, "2BHK": 25000 },
+    "commute_minutes": { "Powai": 40, "BKC": 50, "Andheri": 45, "Vikhroli": 35, "Lower Parel": 55 },
+    "lifestyle_tags": ["Quiet & Peaceful", "Flexible"], "noise_level": "low",
+    "safety_score": 8.5, "food_options": ["home", "mixed"],
+    "amenities": ["gym", "park", "hospital", "atm", "market", "railway", "it_park"], "overall_rating": 4.1
+  }
+]

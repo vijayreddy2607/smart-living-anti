@@ -1,0 +1,34 @@
+[
+  { "area_id": "A001", "area_name": "Kharadi",        "city": "Pune", "food": { "home": 4000, "outside": 8500,  "mixed": 6000 }, "transport": 2500, "utilities": 2000, "miscellaneous": 1500, "hidden_costs": 800  },
+  { "area_id": "A002", "area_name": "Viman Nagar",    "city": "Pune", "food": { "home": 4200, "outside": 9000,  "mixed": 6500 }, "transport": 2800, "utilities": 2200, "miscellaneous": 1800, "hidden_costs": 1000 },
+  { "area_id": "A003", "area_name": "Hadapsar",       "city": "Pune", "food": { "home": 3500, "outside": 7000,  "mixed": 5000 }, "transport": 2200, "utilities": 1800, "miscellaneous": 1200, "hidden_costs": 600  },
+  { "area_id": "A004", "area_name": "Hinjewadi",      "city": "Pune", "food": { "home": 3800, "outside": 8000,  "mixed": 5500 }, "transport": 2000, "utilities": 1900, "miscellaneous": 1400, "hidden_costs": 700  },
+  { "area_id": "A005", "area_name": "Baner",          "city": "Pune", "food": { "home": 4500, "outside": 9500,  "mixed": 7000 }, "transport": 3000, "utilities": 2300, "miscellaneous": 1800, "hidden_costs": 1100 },
+  { "area_id": "A006", "area_name": "Wakad",          "city": "Pune", "food": { "home": 3600, "outside": 7500,  "mixed": 5200 }, "transport": 1800, "utilities": 1800, "miscellaneous": 1300, "hidden_costs": 650  },
+  { "area_id": "A007", "area_name": "Koregaon Park",  "city": "Pune", "food": { "home": 5000, "outside": 11000, "mixed": 7800 }, "transport": 3200, "utilities": 2500, "miscellaneous": 2200, "hidden_costs": 1300 },
+  { "area_id": "A008", "area_name": "Shivajinagar",   "city": "Pune", "food": { "home": 3200, "outside": 6500,  "mixed": 4500 }, "transport": 2000, "utilities": 1600, "miscellaneous": 1100, "hidden_costs": 500  },
+
+  { "area_id": "B001", "area_name": "Whitefield",     "city": "Bengaluru", "food": { "home": 5000, "outside": 10000, "mixed": 7500 }, "transport": 3000, "utilities": 2200, "miscellaneous": 2000, "hidden_costs": 1000 },
+  { "area_id": "B002", "area_name": "Koramangala",    "city": "Bengaluru", "food": { "home": 6000, "outside": 13000, "mixed": 9000 }, "transport": 3500, "utilities": 2800, "miscellaneous": 2800, "hidden_costs": 1500 },
+  { "area_id": "B003", "area_name": "HSR Layout",     "city": "Bengaluru", "food": { "home": 5500, "outside": 11000, "mixed": 8000 }, "transport": 3200, "utilities": 2500, "miscellaneous": 2200, "hidden_costs": 1200 },
+  { "area_id": "B004", "area_name": "Indiranagar",    "city": "Bengaluru", "food": { "home": 6500, "outside": 14000, "mixed": 9500 }, "transport": 3800, "utilities": 3000, "miscellaneous": 3000, "hidden_costs": 1800 },
+  { "area_id": "B005", "area_name": "Electronic City","city": "Bengaluru", "food": { "home": 4000, "outside": 8000,  "mixed": 6000 }, "transport": 2500, "utilities": 1900, "miscellaneous": 1500, "hidden_costs": 800  },
+
+  { "area_id": "H001", "area_name": "HITEC City",     "city": "Hyderabad", "food": { "home": 4500, "outside": 9000,  "mixed": 6500 }, "transport": 2800, "utilities": 2000, "miscellaneous": 1800, "hidden_costs": 900  },
+  { "area_id": "H002", "area_name": "Gachibowli",     "city": "Hyderabad", "food": { "home": 4200, "outside": 8500,  "mixed": 6200 }, "transport": 2600, "utilities": 1900, "miscellaneous": 1700, "hidden_costs": 850  },
+  { "area_id": "H003", "area_name": "Kondapur",       "city": "Hyderabad", "food": { "home": 3800, "outside": 7500,  "mixed": 5500 }, "transport": 2200, "utilities": 1800, "miscellaneous": 1400, "hidden_costs": 700  },
+  { "area_id": "H004", "area_name": "Madhapur",       "city": "Hyderabad", "food": { "home": 4800, "outside": 9500,  "mixed": 7000 }, "transport": 2800, "utilities": 2200, "miscellaneous": 2000, "hidden_costs": 1000 },
+  { "area_id": "H005", "area_name": "Banjara Hills",  "city": "Hyderabad", "food": { "home": 5500, "outside": 12000, "mixed": 8500 }, "transport": 3200, "utilities": 2500, "miscellaneous": 2500, "hidden_costs": 1300 },
+
+  { "area_id": "C001", "area_name": "Sholinganallur", "city": "Chennai", "food": { "home": 4000, "outside": 8000,  "mixed": 5800 }, "transport": 2500, "utilities": 1900, "miscellaneous": 1500, "hidden_costs": 750  },
+  { "area_id": "C002", "area_name": "Perungudi",      "city": "Chennai", "food": { "home": 4200, "outside": 8500,  "mixed": 6000 }, "transport": 2600, "utilities": 2000, "miscellaneous": 1600, "hidden_costs": 800  },
+  { "area_id": "C003", "area_name": "Adyar",          "city": "Chennai", "food": { "home": 5200, "outside": 11000, "mixed": 7800 }, "transport": 3000, "utilities": 2400, "miscellaneous": 2200, "hidden_costs": 1200 },
+  { "area_id": "C004", "area_name": "OMR (Thoraipakkam)", "city": "Chennai", "food": { "home": 3800, "outside": 7500, "mixed": 5500 }, "transport": 2200, "utilities": 1800, "miscellaneous": 1300, "hidden_costs": 650 },
+  { "area_id": "C005", "area_name": "Velachery",      "city": "Chennai", "food": { "home": 3600, "outside": 7000,  "mixed": 5200 }, "transport": 2000, "utilities": 1700, "miscellaneous": 1200, "hidden_costs": 600  },
+
+  { "area_id": "M001", "area_name": "Powai",          "city": "Mumbai", "food": { "home": 5800, "outside": 12000, "mixed": 8500 }, "transport": 3500, "utilities": 2800, "miscellaneous": 2500, "hidden_costs": 1400 },
+  { "area_id": "M002", "area_name": "Andheri East",   "city": "Mumbai", "food": { "home": 5500, "outside": 11500, "mixed": 8000 }, "transport": 3200, "utilities": 2600, "miscellaneous": 2200, "hidden_costs": 1200 },
+  { "area_id": "M003", "area_name": "BKC (Bandra Kurla)", "city": "Mumbai", "food": { "home": 7500, "outside": 16000, "mixed": 11000 }, "transport": 4200, "utilities": 3500, "miscellaneous": 3800, "hidden_costs": 2000 },
+  { "area_id": "M004", "area_name": "Thane",          "city": "Mumbai", "food": { "home": 4500, "outside": 9000,  "mixed": 6500 }, "transport": 2500, "utilities": 2200, "miscellaneous": 1800, "hidden_costs": 900  },
+  { "area_id": "M005", "area_name": "Navi Mumbai",    "city": "Mumbai", "food": { "home": 4000, "outside": 8000,  "mixed": 6000 }, "transport": 2200, "utilities": 2000, "miscellaneous": 1600, "hidden_costs": 800  }
+]

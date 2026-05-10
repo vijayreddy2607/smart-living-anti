@@ -1,0 +1,146 @@
+[
+  { "area_id": "A001", "area_name": "Kharadi", "reviews": [
+      { "author": "Rohit S.",  "rating": 4.5, "text": "Great connectivity to IT parks. Food options are plenty. Rent is reasonable." },
+      { "author": "Sneha P.",  "rating": 4.0, "text": "Good area, slightly noisy during peak hours but manageable." },
+      { "author": "Amit K.",   "rating": 4.2, "text": "Lived here 2 years. Safe neighborhood with good infrastructure." }
+    ], "aggregate_sentiment_score": 78 },
+  { "area_id": "A002", "area_name": "Viman Nagar", "reviews": [
+      { "author": "Priya M.",  "rating": 4.0, "text": "Airport proximity is a huge plus. Lots of restaurants and nightlife options." },
+      { "author": "Karan D.",  "rating": 3.5, "text": "Can be noisy due to flight paths. Rent is on the higher side." },
+      { "author": "Ananya R.", "rating": 4.2, "text": "Vibrant area with everything within walking distance." }
+    ], "aggregate_sentiment_score": 72 },
+  { "area_id": "A003", "area_name": "Hadapsar", "reviews": [
+      { "author": "Vikram J.", "rating": 3.8, "text": "Affordable rents and peaceful environment. Commute to Hinjewadi is long." },
+      { "author": "Meera S.",  "rating": 3.5, "text": "Good for families. Markets and hospitals nearby." },
+      { "author": "Rahul G.",  "rating": 4.0, "text": "Budget-friendly with decent amenities. IT parks within the area are a bonus." }
+    ], "aggregate_sentiment_score": 68 },
+  { "area_id": "A004", "area_name": "Hinjewadi", "reviews": [
+      { "author": "Deepak N.", "rating": 4.0, "text": "Best for IT professionals. Short commute if you work in Phase 1-3." },
+      { "author": "Pooja T.",  "rating": 4.2, "text": "Developing area with new restaurants and gyms." },
+      { "author": "Suresh B.", "rating": 3.8, "text": "Affordable compared to Baner. Good PG options." }
+    ], "aggregate_sentiment_score": 74 },
+  { "area_id": "A005", "area_name": "Baner", "reviews": [
+      { "author": "Neha L.",   "rating": 4.8, "text": "Best area in Pune for work-life balance. Lots of cafes and gyms." },
+      { "author": "Arjun V.",  "rating": 4.5, "text": "Premium locality with great connectivity to Hinjewadi." },
+      { "author": "Kavya S.",  "rating": 4.2, "text": "Slightly expensive but worth every rupee for the lifestyle." }
+    ], "aggregate_sentiment_score": 84 },
+  { "area_id": "A006", "area_name": "Wakad", "reviews": [
+      { "author": "Sanjay M.", "rating": 4.0, "text": "Good balance of affordability and IT proximity." },
+      { "author": "Ritika P.", "rating": 3.9, "text": "Peaceful locality, ideal for someone who prefers quiet evenings." },
+      { "author": "Gaurav T.", "rating": 4.2, "text": "Well-connected to Hinjewadi. Prices are reasonable." }
+    ], "aggregate_sentiment_score": 73 },
+  { "area_id": "A007", "area_name": "Koregaon Park", "reviews": [
+      { "author": "Ishaan K.", "rating": 4.3, "text": "Best nightlife in Pune. Premium lifestyle but expensive." },
+      { "author": "Divya R.",  "rating": 4.5, "text": "Beautiful tree-lined streets. Very safe and lively." },
+      { "author": "Mohit J.",  "rating": 4.1, "text": "Great food scene. Rent is high but quality of life is exceptional." }
+    ], "aggregate_sentiment_score": 80 },
+  { "area_id": "A008", "area_name": "Shivajinagar", "reviews": [
+      { "author": "Preethi N.", "rating": 3.5, "text": "Good public transport links. Noisy but central location." },
+      { "author": "Arun S.",    "rating": 3.8, "text": "Budget option in the heart of Pune." },
+      { "author": "Leela M.",   "rating": 3.3, "text": "Old infrastructure but cheap rent and close to railway station." }
+    ], "aggregate_sentiment_score": 62 },
+
+  { "area_id": "B001", "area_name": "Whitefield", "reviews": [
+      { "author": "Nikhil B.", "rating": 4.2, "text": "Great for IT pros with most top companies based here. Infrastructure is improving." },
+      { "author": "Swati K.",  "rating": 4.4, "text": "Good malls and restaurants. Metro line has reduced commute." },
+      { "author": "Rajan P.",  "rating": 4.0, "text": "Decent area overall. Can get congested during rush hours." }
+    ], "aggregate_sentiment_score": 76 },
+  { "area_id": "B002", "area_name": "Koramangala", "reviews": [
+      { "author": "Isha T.",   "rating": 4.8, "text": "Heart of Bengaluru's startup scene. Amazing restaurants and cafes." },
+      { "author": "Vasu R.",   "rating": 4.6, "text": "Expensive but worth it. Everything walkable." },
+      { "author": "Anand S.",  "rating": 4.4, "text": "Best area for young professionals in Bengaluru." }
+    ], "aggregate_sentiment_score": 88 },
+  { "area_id": "B003", "area_name": "HSR Layout", "reviews": [
+      { "author": "Priya N.",  "rating": 4.5, "text": "One of the safest and cleanest areas in Bengaluru. Highly recommended." },
+      { "author": "Kartik V.", "rating": 4.6, "text": "Great community feel. Good schools and parks nearby." },
+      { "author": "Deepa M.",  "rating": 4.4, "text": "Balanced lifestyle. Good connectivity to major IT hubs." }
+    ], "aggregate_sentiment_score": 85 },
+  { "area_id": "B004", "area_name": "Indiranagar", "reviews": [
+      { "author": "Riya S.",   "rating": 4.5, "text": "Vibrant and cosmopolitan. Great pub scene and food." },
+      { "author": "Aditya L.", "rating": 4.3, "text": "Expensive but the lifestyle justifies it." },
+      { "author": "Naina P.",  "rating": 4.4, "text": "Metro connectivity is a big plus. Very happening area." }
+    ], "aggregate_sentiment_score": 82 },
+  { "area_id": "B005", "area_name": "Electronic City", "reviews": [
+      { "author": "Manoj K.",  "rating": 3.8, "text": "Best for those working in Electronic City. Very affordable." },
+      { "author": "Sudha R.",  "rating": 4.0, "text": "Quiet and budget-friendly. Far from the city center though." },
+      { "author": "Vijay G.",  "rating": 3.7, "text": "Good IT park access. Limited social options but improving." }
+    ], "aggregate_sentiment_score": 70 },
+
+  { "area_id": "H001", "area_name": "HITEC City", "reviews": [
+      { "author": "Sunil K.",  "rating": 4.5, "text": "The Silicon Valley of Hyderabad. Excellent IT infrastructure." },
+      { "author": "Rekha V.",  "rating": 4.3, "text": "Great connectivity to tech parks. Metro is a game changer." },
+      { "author": "Amir S.",   "rating": 4.4, "text": "Good restaurants and malls. Slightly expensive but worthwhile." }
+    ], "aggregate_sentiment_score": 82 },
+  { "area_id": "H002", "area_name": "Gachibowli", "reviews": [
+      { "author": "Pallavi R.", "rating": 4.4, "text": "University campuses and IT parks coexist beautifully. Very safe." },
+      { "author": "Kiran M.",   "rating": 4.5, "text": "Clean, green, and well-planned. One of the best in Hyderabad." },
+      { "author": "Ravi T.",    "rating": 4.2, "text": "Excellent quality of life. International flavour due to MNC employees." }
+    ], "aggregate_sentiment_score": 83 },
+  { "area_id": "H003", "area_name": "Kondapur", "reviews": [
+      { "author": "Snehal B.", "rating": 4.1, "text": "Affordable and close to HITEC City. Good value for money." },
+      { "author": "Naveen P.", "rating": 4.0, "text": "Good local markets. Increasingly popular with IT crowd." },
+      { "author": "Lakshmi V.", "rating": 4.2, "text": "Peaceful residential area with good connectivity." }
+    ], "aggregate_sentiment_score": 76 },
+  { "area_id": "H004", "area_name": "Madhapur", "reviews": [
+      { "author": "Arjun N.",  "rating": 4.3, "text": "Vibrant area next to HITEC City. Great restaurants and nightlife." },
+      { "author": "Meghna K.", "rating": 4.2, "text": "Good mix of residential and commercial. Very liveable." },
+      { "author": "Saurabh R.", "rating": 4.4, "text": "Best connectivity in Hyderabad. Metro stops here!" }
+    ], "aggregate_sentiment_score": 80 },
+  { "area_id": "H005", "area_name": "Banjara Hills", "reviews": [
+      { "author": "Anita S.",  "rating": 4.4, "text": "Premium area. Beautiful greenery and upscale restaurants." },
+      { "author": "Prashant L.", "rating": 4.2, "text": "Slightly far from HITEC City but great lifestyle." },
+      { "author": "Divya R.",  "rating": 4.3, "text": "The Beverly Hills of Hyderabad. Expensive but luxurious." }
+    ], "aggregate_sentiment_score": 79 },
+
+  { "area_id": "C001", "area_name": "Sholinganallur", "reviews": [
+      { "author": "Suresh M.",  "rating": 4.0, "text": "Great for IT professionals on OMR. Good food options on the road." },
+      { "author": "Priya V.",   "rating": 3.9, "text": "Traffic on OMR can be bad but area itself is decent." },
+      { "author": "Balaji R.",  "rating": 4.1, "text": "Affordable for Chennai standards. Many IT parks nearby." }
+    ], "aggregate_sentiment_score": 74 },
+  { "area_id": "C002", "area_name": "Perungudi", "reviews": [
+      { "author": "Kavitha N.", "rating": 4.0, "text": "Good IT hub. Quieter than Sholinganallur with similar amenities." },
+      { "author": "Arun M.",    "rating": 4.1, "text": "Clean residential area. Good food options." },
+      { "author": "Sangeetha K.", "rating": 3.9, "text": "Decent connectivity. Improving infrastructure." }
+    ], "aggregate_sentiment_score": 73 },
+  { "area_id": "C003", "area_name": "Adyar", "reviews": [
+      { "author": "Radha P.",  "rating": 4.5, "text": "Premium locality with excellent schools and hospitals. Beach nearby!" },
+      { "author": "Karthik R.", "rating": 4.4, "text": "Old money area. Safe, green, and well-connected." },
+      { "author": "Meena S.",  "rating": 4.6, "text": "Best residential area in Chennai. Slightly expensive but excellent quality of life." }
+    ], "aggregate_sentiment_score": 85 },
+  { "area_id": "C004", "area_name": "OMR (Thoraipakkam)", "reviews": [
+      { "author": "Vinod K.",  "rating": 3.9, "text": "Budget-friendly IT corridor area. Good connectivity." },
+      { "author": "Saranya R.", "rating": 3.8, "text": "Many IT companies here. Area is still developing." },
+      { "author": "Ashok M.",  "rating": 4.0, "text": "Good value for money. Nice restaurants on the main road." }
+    ], "aggregate_sentiment_score": 69 },
+  { "area_id": "C005", "area_name": "Velachery", "reviews": [
+      { "author": "Ramesh T.", "rating": 4.1, "text": "Metro connectivity is a huge advantage. Budget-friendly." },
+      { "author": "Lakshmi P.", "rating": 4.2, "text": "Well-connected to multiple parts of Chennai via metro." },
+      { "author": "Sunil R.",  "rating": 4.0, "text": "Good residential area. Phoenix Mall nearby for shopping." }
+    ], "aggregate_sentiment_score": 75 },
+
+  { "area_id": "M001", "area_name": "Powai", "reviews": [
+      { "author": "Rohit D.",  "rating": 4.7, "text": "Best IT area in Mumbai. IIT campus, Hiranandani township — self-contained." },
+      { "author": "Nisha K.",  "rating": 4.6, "text": "Beautiful lake views. Safe and well-maintained." },
+      { "author": "Vikram A.", "rating": 4.5, "text": "Premium lifestyle but justifies the rent. Great international companies here." }
+    ], "aggregate_sentiment_score": 87 },
+  { "area_id": "M002", "area_name": "Andheri East", "reviews": [
+      { "author": "Santosh P.", "rating": 4.2, "text": "Great connectivity — metro, suburban rail, airport. Very convenient." },
+      { "author": "Priya B.",   "rating": 4.0, "text": "Busy area but everything is accessible. Good food and shopping." },
+      { "author": "Sagar M.",   "rating": 4.3, "text": "Best transportation hub in Mumbai. Slightly noisy but efficient." }
+    ], "aggregate_sentiment_score": 78 },
+  { "area_id": "M003", "area_name": "BKC (Bandra Kurla)", "reviews": [
+      { "author": "Anjali R.",  "rating": 4.5, "text": "Premium financial district. Banks, MNCs, world-class offices." },
+      { "author": "Sumit V.",   "rating": 4.4, "text": "Excellent infrastructure. Very expensive but corporate-grade." },
+      { "author": "Shreya K.",  "rating": 4.3, "text": "Best business address in Mumbai. Great restaurants nearby." }
+    ], "aggregate_sentiment_score": 84 },
+  { "area_id": "M004", "area_name": "Thane", "reviews": [
+      { "author": "Manoj S.",  "rating": 4.2, "text": "Affordable with a suburban feel. Good schools and hospitals." },
+      { "author": "Deepika R.", "rating": 4.3, "text": "Much cleaner and greener than central Mumbai. Good for families." },
+      { "author": "Rahul K.",  "rating": 4.0, "text": "Budget-friendly with rail connectivity. A bit far from main offices though." }
+    ], "aggregate_sentiment_score": 77 },
+  { "area_id": "M005", "area_name": "Navi Mumbai", "reviews": [
+      { "author": "Harish T.",  "rating": 4.1, "text": "Planned city with wide roads and good infrastructure. Very affordable." },
+      { "author": "Sulakshana P.", "rating": 4.2, "text": "Safe and family-friendly. SEEPZ and Airoli IT parks are close." },
+      { "author": "Nitin B.",  "rating": 4.0, "text": "Great quality of life for the price. Upcoming airport will be a game changer." }
+    ], "aggregate_sentiment_score": 75 }
+]
