@@ -45,6 +45,7 @@ async def get_history(current_user: dict = Depends(get_current_user)):
             "timestamp":          log.get("timestamp"),
             "job_location":       log.get("job_location"),
             "monthly_salary":     log.get("monthly_salary"),
+            "emi_commitments":    log.get("emi_commitments", 0),
             "goal_description":   log.get("goal_description"),
             "goal_timeframe_months": log.get("goal_timeframe_months"),
             "estimated_goal_cost": log.get("estimated_goal_cost"),

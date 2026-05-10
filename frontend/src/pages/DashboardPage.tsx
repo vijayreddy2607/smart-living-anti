@@ -17,6 +17,7 @@ interface HistoryEntry {
   timestamp: string;
   job_location: string;
   monthly_salary: number;
+  emi_commitments: number;
   goal_description: string;
   goal_timeframe_months: number;
   estimated_goal_cost: number;
@@ -248,13 +249,14 @@ function WeekendTipsPanel({ city }: { city: string }) {
 }
 
 /* ─── Smart Money Tips Panel ─────────────────────────────────────── */
-function MoneyTipsPanel({ salary, spend, bookings }: {
+function MoneyTipsPanel({ salary, emi = 0, spend, bookings }: {
   salary: number;
+  emi?: number;
   spend: number;
   bookings: BookedItem[];
 }) {
   const [expanded, setExpanded] = useState(false);
-  const savingsRate = salary > 0 ? Math.round(((salary - spend) / salary) * 100) : 0;
+  const savingsRate = salary > 0 ? Math.round(((salary - emi - spend) / salary) * 100) : 0;
 
   const foodSpend    = bookings.filter(b => b.type === "food").reduce((s, b) => s + b.monthlyCost, 0);
   const gymSpend     = bookings.filter(b => b.type === "gym").reduce((s, b) => s + b.monthlyCost, 0);
@@ -263,11 +265,20 @@ function MoneyTipsPanel({ salary, spend, bookings }: {
 
   const tips: { icon: React.ReactNode; color: string; tip: string; saving: string }[] = [];
 
+  if (emi > 0 && salary > 0 && (emi / salary) > 0.35) {
+    tips.push({
+      icon: <IndianRupee size={15} />, color: "var(--accent-rose)",
+      tip: `Your EMI (${fmt(emi)}/mo) is ${Math.round((emi / salary) * 100)}% of your salary — above the safe 30% limit. Consider a prepayment strategy or refinancing to reduce this burden.`,
+      saving: "Reduce debt pressure",
+    });
+  }
+
   if (savingsRate < 20 && salary > 0) {
+    const needed = Math.round(salary * 0.2 - (salary - emi - spend));
     tips.push({
       icon: <Target size={15} />, color: "var(--accent-indigo)",
-      tip: `You're saving ${savingsRate}% of income. The 20% rule means saving ${fmt(Math.round(salary * 0.2))}/month. Try reducing one category by 10% to get there.`,
-      saving: `+${fmt(Math.round(salary * 0.2 - (salary - spend)))} to reach goal`,
+      tip: `You're saving ${savingsRate}% of income. The 20% rule means saving ${fmt(Math.round(salary * 0.2))}/month. You need to free up ${fmt(needed > 0 ? needed : 0)} more.`,
+      saving: `Need ${fmt(needed > 0 ? needed : 0)} more/mo`,
     });
   }
 
@@ -456,6 +467,7 @@ export function DashboardPage() {
   };
 
   const latestSalary = dashboard?.history?.[0]?.monthly_salary;
+  const latestEmi    = dashboard?.history?.[0]?.emi_commitments ?? 0;
   const latestCity   = dashboard?.history?.[0]?.job_location?.split(",").pop()?.trim() || "";
   const latestArea   = dashboard?.history?.[0]?.top_area || "";
   const isNewUser    = !loading && (!dashboard || dashboard.total_runs === 0);
@@ -568,6 +580,7 @@ export function DashboardPage() {
             {/* ── Spending Tracker ── */}
             <SpendingTrackerPanel
               salary={latestSalary}
+              emi={latestEmi}
               city={latestCity}
               area={latestArea}
               onStartPlanning={() => navigate("/plan")}
@@ -576,8 +589,8 @@ export function DashboardPage() {
             {/* ── Weekend Tips ── */}
             <WeekendTipsPanel city={latestCity || "Bengaluru"} />
 
-            {/* ── Money Tips (reads live bookings from context) ── */}
-            <_MoneyTipsBridge salary={latestSalary || 0} />
+            {/* ── Money Tips (reads live bookings + EMI from context) ── */}
+            <_MoneyTipsBridge salary={latestSalary || 0} emi={latestEmi} />
 
             {/* ── City Stats ── */}
             {stats && (
@@ -693,11 +706,13 @@ export function DashboardPage() {
 /* ─── Spending Tracker Panel ────────────────────────────────────── */
 function SpendingTrackerPanel({
   salary,
+  emi = 0,
   city,
   area,
   onStartPlanning,
 }: {
   salary?: number;
+  emi?: number;
   city: string;
   area: string;
   onStartPlanning: () => void;
@@ -706,7 +721,7 @@ function SpendingTrackerPanel({
   const [showAll, setShowAll] = useState(false);
 
   const monthlyIncome   = salary || 0;
-  const monthlySavings  = getSavings(monthlyIncome, 0);
+  const monthlySavings  = getSavings(monthlyIncome, emi);   // salary - emi - expenses
   const savingsPercent  = monthlyIncome > 0 ? Math.round((monthlySavings / monthlyIncome) * 100) : 0;
 
   const grouped = bookings.reduce<Record<string, BookedItem[]>>((acc, b) => {
@@ -774,12 +789,96 @@ function SpendingTrackerPanel({
         </div>
       ) : (
         <div className="p-6">
+          {/* ── Salary Flow Breakdown (only when salary known) ── */}
+          {monthlyIncome > 0 && (
+            <div className="mb-6 p-4 rounded-2xl" style={{ background: "var(--bg-input)", border: "1px solid var(--border-default)" }}>
+              <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: "var(--text-muted)" }}>
+                Monthly Money Flow
+              </p>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-1">
+                {/* Salary */}
+                <div className="flex-1 p-3 rounded-xl text-center"
+                  style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)" }}>
+                  <p className="text-[10px] font-medium mb-0.5" style={{ color: "var(--accent-indigo)" }}>Salary</p>
+                  <p className="text-base font-extrabold" style={{ color: "var(--accent-indigo)" }}>{fmt(monthlyIncome)}</p>
+                </div>
+                {/* Arrow */}
+                <div className="text-center px-1 self-center text-xs font-bold" style={{ color: "var(--text-muted)" }}>−</div>
+                {/* EMI */}
+                <div className="flex-1 p-3 rounded-xl text-center"
+                  style={{ background: emi > 0 ? "rgba(251,113,133,0.08)" : "var(--bg-elevated)", border: `1px solid ${emi > 0 ? "rgba(251,113,133,0.2)" : "var(--border-default)"}` }}>
+                  <p className="text-[10px] font-medium mb-0.5" style={{ color: emi > 0 ? "var(--accent-rose)" : "var(--text-muted)" }}>EMI / Loans</p>
+                  <p className="text-base font-extrabold" style={{ color: emi > 0 ? "var(--accent-rose)" : "var(--text-muted)" }}>
+                    {emi > 0 ? fmt(emi) : "₹0"}
+                  </p>
+                </div>
+                <div className="text-center px-1 self-center text-xs font-bold" style={{ color: "var(--text-muted)" }}>−</div>
+                {/* Expenses */}
+                <div className="flex-1 p-3 rounded-xl text-center"
+                  style={{ background: "rgba(251,146,60,0.08)", border: "1px solid rgba(251,146,60,0.2)" }}>
+                  <p className="text-[10px] font-medium mb-0.5" style={{ color: "var(--accent-orange)" }}>Expenses</p>
+                  <p className="text-base font-extrabold" style={{ color: "var(--accent-orange)" }}>{fmt(totalMonthlySpend)}</p>
+                  <p className="text-[9px]" style={{ color: "var(--text-muted)" }}>{bookings.length} items</p>
+                </div>
+                <div className="text-center px-1 self-center text-xs font-bold" style={{ color: "var(--text-muted)" }}>=</div>
+                {/* You Keep */}
+                <div className="flex-1 p-3 rounded-xl text-center"
+                  style={{
+                    background: monthlySavings >= 0 ? "rgba(52,211,153,0.1)" : "rgba(251,113,133,0.08)",
+                    border: `1.5px solid ${monthlySavings >= 0 ? "rgba(52,211,153,0.3)" : "rgba(251,113,133,0.2)"}`,
+                  }}>
+                  <p className="text-[10px] font-bold mb-0.5" style={{ color: monthlySavings >= 0 ? "var(--accent-emerald)" : "var(--accent-rose)" }}>
+                    You Keep 💰
+                  </p>
+                  <p className="text-base font-extrabold" style={{ color: monthlySavings >= 0 ? "var(--accent-emerald)" : "var(--accent-rose)" }}>
+                    {monthlySavings >= 0 ? fmt(monthlySavings) : `−${fmt(Math.abs(monthlySavings))}`}
+                  </p>
+                  <p className="text-[9px]" style={{ color: "var(--text-muted)" }}>
+                    {savingsPercent >= 20 ? "👍 Healthy" : savingsPercent >= 10 ? "⚠️ Moderate" : monthlySavings < 0 ? "❗ Over budget" : "❗ Low"}
+                  </p>
+                </div>
+              </div>
+              {/* Savings rate bar */}
+              {monthlySavings > 0 && (
+                <div className="mt-3">
+                  <div className="flex justify-between text-[10px] mb-1" style={{ color: "var(--text-muted)" }}>
+                    <span>Savings rate: <strong style={{ color: savingsPercent >= 20 ? "var(--accent-emerald)" : "var(--accent-amber)" }}>{savingsPercent}% of salary</strong></span>
+                    <span>Goal: 20%+</span>
+                  </div>
+                  <div className="h-2 rounded-full overflow-hidden" style={{ background: "var(--bg-elevated)" }}>
+                    <div className="h-full rounded-full transition-all duration-700"
+                      style={{
+                        width: `${Math.min(100, savingsPercent)}%`,
+                        background: savingsPercent >= 20
+                          ? "linear-gradient(90deg, var(--accent-emerald), var(--accent-sky))"
+                          : savingsPercent >= 10
+                          ? "linear-gradient(90deg, var(--accent-amber), var(--accent-orange))"
+                          : "var(--accent-rose)",
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── No salary prompt ── */}
+          {monthlyIncome === 0 && (
+            <div className="mb-6 p-4 rounded-xl flex items-center gap-3"
+              style={{ background: "var(--bg-input)", border: "1px solid var(--border-default)" }}>
+              <Shield size={16} style={{ color: "var(--text-muted)" }} />
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+                Run a plan with your salary to see the full money flow — Salary − EMI − Expenses = What You Keep
+              </p>
+            </div>
+          )}
+
           {/* ── Summary Cards ── */}
           <div className="grid grid-cols-3 gap-3 mb-6">
             <div className="p-4 rounded-xl text-center"
-              style={{ background: "rgba(129,140,248,0.08)", border: "1px solid rgba(129,140,248,0.15)" }}>
-              <p className="text-xs font-medium mb-1" style={{ color: "var(--text-muted)" }}>Monthly Spend</p>
-              <p className="text-xl font-extrabold" style={{ color: "var(--accent-indigo)" }}>
+              style={{ background: "rgba(251,146,60,0.08)", border: "1px solid rgba(251,146,60,0.15)" }}>
+              <p className="text-xs font-medium mb-1" style={{ color: "var(--text-muted)" }}>Total Expenses</p>
+              <p className="text-xl font-extrabold" style={{ color: "var(--accent-orange)" }}>
                 {fmt(totalMonthlySpend)}
               </p>
               <p className="text-[10px] mt-1" style={{ color: "var(--text-muted)" }}>
@@ -787,41 +886,36 @@ function SpendingTrackerPanel({
               </p>
             </div>
 
-            {monthlyIncome > 0 ? (
-              <>
-                <div className="p-4 rounded-xl text-center" style={{
-                  background: monthlySavings >= 0 ? "rgba(52,211,153,0.08)" : "rgba(251,113,133,0.08)",
-                  border: `1px solid ${monthlySavings >= 0 ? "rgba(52,211,153,0.2)" : "rgba(251,113,133,0.2)"}`,
-                }}>
-                  <p className="text-xs font-medium mb-1" style={{ color: "var(--text-muted)" }}>You Keep</p>
-                  <p className="text-xl font-extrabold"
-                    style={{ color: monthlySavings >= 0 ? "var(--accent-emerald)" : "var(--accent-rose)" }}>
-                    {fmt(Math.abs(monthlySavings))}
-                  </p>
-                  <p className="text-[10px] mt-1" style={{ color: "var(--text-muted)" }}>
-                    {monthlySavings >= 0 ? "saved this month 🎉" : "over budget ⚠️"}
-                  </p>
-                </div>
-                <div className="p-4 rounded-xl text-center" style={{ background: "var(--bg-elevated)" }}>
-                  <p className="text-xs font-medium mb-1" style={{ color: "var(--text-muted)" }}>Savings Rate</p>
-                  <p className="text-xl font-extrabold"
-                    style={{ color: savingsPercent >= 20 ? "var(--accent-emerald)" : savingsPercent >= 10 ? "var(--accent-amber)" : "var(--accent-rose)" }}>
-                    {savingsPercent}%
-                  </p>
-                  <p className="text-[10px] mt-1" style={{ color: "var(--text-muted)" }}>
-                    {savingsPercent >= 20 ? "👍 Healthy" : savingsPercent >= 10 ? "⚠️ Moderate" : "❗ Low"}
-                  </p>
-                </div>
-              </>
-            ) : (
-              <div className="col-span-2 p-4 rounded-xl flex items-center justify-center gap-3"
-                style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-default)" }}>
-                <Shield size={16} style={{ color: "var(--text-muted)" }} />
-                <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                  Run a plan with your salary to see live savings calculations
+            {emi > 0 ? (
+              <div className="p-4 rounded-xl text-center"
+                style={{ background: "rgba(251,113,133,0.08)", border: "1px solid rgba(251,113,133,0.15)" }}>
+                <p className="text-xs font-medium mb-1" style={{ color: "var(--text-muted)" }}>EMI / Loans</p>
+                <p className="text-xl font-extrabold" style={{ color: "var(--accent-rose)" }}>{fmt(emi)}</p>
+                <p className="text-[10px] mt-1" style={{ color: "var(--text-muted)" }}>
+                  {monthlyIncome > 0 ? `${Math.round((emi / monthlyIncome) * 100)}% of salary` : "fixed monthly"}
                 </p>
               </div>
+            ) : (
+              <div className="p-4 rounded-xl text-center" style={{ background: "var(--bg-elevated)" }}>
+                <p className="text-xs font-medium mb-1" style={{ color: "var(--text-muted)" }}>EMI / Loans</p>
+                <p className="text-xl font-extrabold" style={{ color: "var(--text-muted)" }}>₹0</p>
+                <p className="text-[10px] mt-1" style={{ color: "var(--text-muted)" }}>no loans</p>
+              </div>
             )}
+
+            <div className="p-4 rounded-xl text-center" style={{
+              background: monthlySavings >= 0 ? "rgba(52,211,153,0.08)" : "rgba(251,113,133,0.08)",
+              border: `1px solid ${monthlySavings >= 0 ? "rgba(52,211,153,0.2)" : "rgba(251,113,133,0.2)"}`,
+            }}>
+              <p className="text-xs font-medium mb-1" style={{ color: "var(--text-muted)" }}>You Keep</p>
+              <p className="text-xl font-extrabold"
+                style={{ color: monthlySavings >= 0 ? "var(--accent-emerald)" : "var(--accent-rose)" }}>
+                {monthlySavings >= 0 ? fmt(monthlySavings) : `−${fmt(Math.abs(monthlySavings))}`}
+              </p>
+              <p className="text-[10px] mt-1" style={{ color: "var(--text-muted)" }}>
+                {monthlySavings >= 0 ? `${savingsPercent}% savings rate` : "over budget ⚠️"}
+              </p>
+            </div>
           </div>
 
           {/* ── Category Breakdown ── */}
@@ -947,16 +1041,24 @@ function SpendingTrackerPanel({
               <PiggyBank size={18} className="shrink-0 mt-0.5" style={{ color: "var(--accent-emerald)" }} />
               <div>
                 <p className="text-xs font-semibold mb-1" style={{ color: "var(--accent-emerald)" }}>
-                  💰 You can keep {fmt(Math.max(0, monthlySavings))} this month
+                  {monthlySavings >= 0
+                    ? `💰 You keep ${fmt(monthlySavings)} this month`
+                    : `⚠️ You are ${fmt(Math.abs(monthlySavings))} over budget`}
                 </p>
                 <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+                  {emi > 0
+                    ? `${fmt(monthlyIncome)} salary − ${fmt(emi)} EMI − ${fmt(totalMonthlySpend)} expenses = `
+                    : `${fmt(monthlyIncome)} salary − ${fmt(totalMonthlySpend)} expenses = `}
+                  <strong style={{ color: monthlySavings >= 0 ? "var(--accent-emerald)" : "var(--accent-rose)" }}>
+                    {fmt(monthlySavings)} remaining
+                  </strong>
                   {monthlySavings >= monthlyIncome * 0.25
-                    ? `Excellent! You're saving ${savingsPercent}% of income — well above the 20% benchmark. Consider a SIP or recurring deposit with the surplus.`
+                    ? " · Excellent! Consider putting the surplus into an SIP or RD."
                     : monthlySavings >= monthlyIncome * 0.15
-                    ? `Good progress — ${savingsPercent}% savings rate. Trimming dining out by 20% can push you above the 20% savings target.`
+                    ? " · Good. Trim dining by 20% to hit the 20% savings target."
                     : monthlySavings > 0
-                    ? `Your savings rate of ${savingsPercent}% is low. Try a cheaper accommodation type or cook at home more often.`
-                    : `⚠️ Expenses exceed income by ${fmt(Math.abs(monthlySavings))}. Remove some bookings or look for a more budget-friendly area.`}
+                    ? " · Low savings rate. A cheaper area or accommodation type can help."
+                    : " · Remove some expenses or consider a more affordable neighbourhood."}
                 </p>
               </div>
             </div>
@@ -970,10 +1072,9 @@ function SpendingTrackerPanel({
   );
 }
 
-/* ─── Connect Money Tips to live bookings ─────────────────────────
-   We need to forward live bookings into MoneyTipsPanel, so we create
-   a connector component that pulls from context and passes it down.   */
-function _MoneyTipsBridge({ salary }: { salary: number }) {
+/* ─── Connect Money Tips to live bookings + EMI ───────────────────
+   Pulls live bookings from context and forwards all data down.        */
+function _MoneyTipsBridge({ salary, emi }: { salary: number; emi: number }) {
   const { bookings, totalMonthlySpend } = useBookings();
-  return <MoneyTipsPanel salary={salary} spend={totalMonthlySpend} bookings={bookings} />;
+  return <MoneyTipsPanel salary={salary} emi={emi} spend={totalMonthlySpend} bookings={bookings} />;
 }
