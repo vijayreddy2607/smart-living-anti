@@ -162,19 +162,11 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS — allow all common local dev ports
+# CORS — allow all origins for Replit proxy compatibility
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:5174",
-        "http://localhost:3000",
-        "http://localhost:8080",
-        "http://localhost:8081",
-        "http://localhost:8082",
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
