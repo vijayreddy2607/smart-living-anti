@@ -36,6 +36,7 @@ from grok_integration import compute_savings_goal, generate_global_ai_insight, g
 # Gemini (2.5-flash): knowledge-rich for area descriptions + lifestyle advice
 from gemini_integration import enrich_recommendations, enrich_places
 from places_integration import get_nearby_restaurants, get_nearby_gyms, _salary_budget_label, _salary_gym_budget
+from static_places import get_fallback_food, get_fallback_gyms
 # NLP Review Analysis (Phase 2)
 from nlp_engine import analyze_reviews
 
@@ -507,9 +508,15 @@ async def recommend(req: RecommendRequest, request: Request):
     # Rebuild recommendations with AI fields
     final_recommendations: list[AreaRecommendation] = []
     for orig, ai_data in zip(recommendations, enriched):
-        # Phase 3: Fetch salary-based places
+        # Phase 3: Fetch salary-based places (Google Places API, falls back to curated static data)
         raw_food = await get_nearby_restaurants(orig.area_name, city=req.city, monthly_salary=req.monthly_salary)
         raw_gyms = await get_nearby_gyms(orig.area_name, city=req.city, monthly_salary=req.monthly_salary)
+
+        # If Places API returned nothing (no API key or quota), use curated static fallback
+        if not raw_food:
+            raw_food = get_fallback_food(orig.area_name, monthly_salary=req.monthly_salary)
+        if not raw_gyms:
+            raw_gyms = get_fallback_gyms(orig.area_name, monthly_salary=req.monthly_salary)
 
         # AI enriches the places with salary context
         enriched_places = await enrich_places(orig.area_name, raw_food, raw_gyms, user_profile_dict, city=req.city)

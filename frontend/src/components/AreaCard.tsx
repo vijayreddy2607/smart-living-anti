@@ -480,27 +480,69 @@ export function AreaCard({ data }: Props) {
           )}
 
           {activeTab === "food" && (
-            <div className="space-y-4 fade-in-up">
-              <h4 className="text-sm font-semibold mb-3 flex items-center gap-2" style={{ color: "var(--accent-rose)" }}>
-                <Utensils size={16} /> Top Nearby Dining
-              </h4>
+            <div className="space-y-3 fade-in-up">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-sm font-semibold flex items-center gap-2" style={{ color: "var(--accent-rose)" }}>
+                  <Utensils size={16} /> Top Nearby Dining
+                </h4>
+                {data.food_spots && data.food_spots.length > 0 && (
+                  <span className="text-xs px-2 py-1 rounded-full font-medium"
+                    style={{ background: "rgba(251,113,133,0.1)", color: "var(--accent-rose)", border: "1px solid rgba(251,113,133,0.2)" }}>
+                    {data.food_spots.length} options · click to book
+                  </span>
+                )}
+              </div>
               {(!data.food_spots || data.food_spots.length === 0) ? (
-                <p className="text-sm text-gray-500">No specific food options returned.</p>
+                <div className="py-8 text-center">
+                  <Utensils size={28} className="mx-auto mb-3" style={{ color: "var(--text-muted)", opacity: 0.4 }} />
+                  <p className="text-sm font-medium" style={{ color: "var(--text-muted)" }}>Loading food options...</p>
+                  <p className="text-xs mt-1" style={{ color: "var(--text-muted)", opacity: 0.6 }}>Run a fresh recommendation to see nearby dining</p>
+                </div>
               ) : (
-                data.food_spots.map((f, i) => <PlaceRow key={i} place={f} areaName={data.area_name} city={data.city} placeType="food" />)
+                <>
+                  <div className="p-3 rounded-xl mb-3 flex items-center gap-3"
+                    style={{ background: "rgba(251,113,133,0.06)", border: "1px solid rgba(251,113,133,0.15)" }}>
+                    <Sparkles size={14} style={{ color: "var(--accent-rose)", flexShrink: 0 }} />
+                    <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+                      Book a restaurant below to add it to your <strong style={{ color: "var(--accent-rose)" }}>monthly spending tracker</strong>. We estimate ₹200–400/meal × 25 meals.
+                    </p>
+                  </div>
+                  {data.food_spots.map((f, i) => <PlaceRow key={i} place={f} areaName={data.area_name} city={data.city} placeType="food" />)}
+                </>
               )}
             </div>
           )}
 
           {activeTab === "fitness" && (
-            <div className="space-y-4 fade-in-up">
-              <h4 className="text-sm font-semibold mb-3 flex items-center gap-2" style={{ color: "var(--accent-emerald)" }}>
-                <Dumbbell size={16} /> Top Nearby Gyms
-              </h4>
+            <div className="space-y-3 fade-in-up">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-sm font-semibold flex items-center gap-2" style={{ color: "var(--accent-emerald)" }}>
+                  <Dumbbell size={16} /> Top Nearby Gyms
+                </h4>
+                {data.gym_options && data.gym_options.length > 0 && (
+                  <span className="text-xs px-2 py-1 rounded-full font-medium"
+                    style={{ background: "rgba(52,211,153,0.1)", color: "var(--accent-emerald)", border: "1px solid rgba(52,211,153,0.2)" }}>
+                    {data.gym_options.length} gyms · click to book
+                  </span>
+                )}
+              </div>
               {(!data.gym_options || data.gym_options.length === 0) ? (
-                <p className="text-sm text-gray-500">No specific fitness options returned.</p>
+                <div className="py-8 text-center">
+                  <Dumbbell size={28} className="mx-auto mb-3" style={{ color: "var(--text-muted)", opacity: 0.4 }} />
+                  <p className="text-sm font-medium" style={{ color: "var(--text-muted)" }}>Loading gym options...</p>
+                  <p className="text-xs mt-1" style={{ color: "var(--text-muted)", opacity: 0.6 }}>Run a fresh recommendation to see nearby gyms</p>
+                </div>
               ) : (
-                data.gym_options.map((g, i) => <PlaceRow key={i} place={g} areaName={data.area_name} city={data.city} placeType="gym" />)
+                <>
+                  <div className="p-3 rounded-xl mb-3 flex items-center gap-3"
+                    style={{ background: "rgba(52,211,153,0.06)", border: "1px solid rgba(52,211,153,0.15)" }}>
+                    <Sparkles size={14} style={{ color: "var(--accent-emerald)", flexShrink: 0 }} />
+                    <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
+                      Book a gym to add its <strong style={{ color: "var(--accent-emerald)" }}>monthly membership cost</strong> directly to your spending tracker.
+                    </p>
+                  </div>
+                  {data.gym_options.map((g, i) => <PlaceRow key={i} place={g} areaName={data.area_name} city={data.city} placeType="gym" />)}
+                </>
               )}
             </div>
           )}
