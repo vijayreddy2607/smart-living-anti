@@ -183,9 +183,11 @@ app.add_middleware(
 from routes.recommend  import router as recommend_router
 from routes.auth       import router as auth_router
 from routes.dashboard  import router as dashboard_router
+from routes.reviews    import router as reviews_router
 app.include_router(recommend_router)
 app.include_router(auth_router)
 app.include_router(dashboard_router)
+app.include_router(reviews_router)
 
 
 @app.get("/")

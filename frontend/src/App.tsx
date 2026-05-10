@@ -75,14 +75,14 @@ function PlannerApp() {
     <div className="min-h-screen" style={{ background: "var(--bg-primary)" }}>
       {/* ── Navbar ── */}
       <nav
-        className="sticky top-0 z-50 px-6 py-4"
         style={{
+          position: "sticky", top: 0, zIndex: 50, padding: "16px 24px",
           background: "rgba(10, 10, 15, 0.85)",
           backdropFilter: "blur(16px)",
-          borderBottom: "1px solid var(--border-default)",
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
         }}
       >
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+        <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "var(--gradient-primary)" }}>
               <MapPin size={18} color="white" />
@@ -129,7 +129,7 @@ function PlannerApp() {
       </nav>
 
       {/* ── Main Content ── */}
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
         {view.kind === "form" && (
           <div className="fade-in-up">
             <div className="text-center mb-8">
